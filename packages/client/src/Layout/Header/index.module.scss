@@ -1,0 +1,105 @@
+.header {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+
+    &-left {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &-logo {
+            width: 60px;
+            height: 30px;
+            background-image: url('@/assets/header/logo.png');
+            background-size: 100% 100%;
+        }
+
+        &-text {
+            color: #000;
+            font-family: Poppins;
+            font-weight: 500;
+            font-size: 20px;
+        }
+    }
+
+    &-menu {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        flex: 1;
+        gap: 50px;
+
+        &-item {
+            font-family: Poppins;
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 30px;
+            text-align: center;
+            transition: all .3s ease;
+            cursor: pointer;
+
+            &:hover {
+                color: rgba(28, 134, 240, 1);
+            }
+        }
+    }
+
+    &-right {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 50px;
+
+        &-item {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.2);
+            }
+        }
+
+        .icon-x {
+            background-image: url('@/assets/header/x.png');
+            background-size: cover;
+        }
+
+        .icon-feishu {
+            background-image: url('@/assets/header/feishu.png');
+            background-size: cover;
+        }
+
+        .icon-git {
+            background-image: url('@/assets/header/github.png');
+            background-size: cover;
+        }
+    }
+
+    &-connect {
+        flex-shrink: 0;
+        margin-left: 50px;
+        font-family: Poppins;
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        width: 148px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #3297FC;
+        transition: all .3s ease;
+        border-radius: 130px;
+        color: #fff;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(28, 134, 240, 1);
+        }
+    }
+}
