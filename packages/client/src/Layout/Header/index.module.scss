@@ -1,8 +1,20 @@
 .header {
+    position: relative;
     height: 80px;
     display: flex;
     align-items: center;
     box-sizing: border-box;
+
+    &::after {
+        position: absolute;
+        width: 100vw;
+        height: 1px;
+        content: '';
+        border-bottom: 1px solid rgba(236, 236, 236, 1);
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
 
     &-left {
         flex-shrink: 0;

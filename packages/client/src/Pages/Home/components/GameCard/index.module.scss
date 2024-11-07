@@ -1,0 +1,121 @@
+.card {
+    display: flex;
+    background: #fff;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0px 8px 24px 0px rgba(149, 157, 165, 0.2);
+
+    &-avatar {
+        width: 337px;
+        height: 337px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+
+        &-content {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .content-item {
+                color: #FFF;
+                font-family: Poppins;
+                font-size: 16px;
+                padding: 8px 12px;
+                background: rgba(41, 45, 50, 0.3);
+                border-radius: 120px;
+                line-height: 24px;
+            }
+        }
+    }
+
+    &-main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-left: 20px;
+
+        &-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .title-text {
+                color: #292D32;
+                font-family: Poppins;
+                font-weight: 700;
+                font-size: 18px;
+            }
+
+            .title-icon {
+                width: 24px;
+                height: 24px;
+                background-image: url('@/assets/home/game-card-star.png');
+                background-size: cover;
+            }
+        }
+
+        &-message {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: #F6F6F6;
+            border-radius: 15px;
+            gap: 10px;
+
+            .message-item {
+                flex: 1;
+
+                &-title {
+                    color: #292D32;
+                    font-family: Poppins;
+                    font-weight: 500;
+                    font-size: 18px;
+                    line-height: 27px;
+                }
+
+                &-value {
+                    margin-top: 5px;
+                    color: #808080;
+                    font-family: Poppins;
+                    font-size: 18px;
+                }
+
+                &:last-of-type {
+                    flex: 100%;
+                }
+            }
+        }
+
+        &-price {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #292D32;
+            font-family: Poppins;
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        &-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+
+            .control-btn {
+                flex: 1;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #3297FC;
+                border-radius: 10px;
+                color: #FFF;
+                font-family: Poppins;
+                font-weight: 600;
+                font-size: 16px;
+            }
+        }
+    }
+}

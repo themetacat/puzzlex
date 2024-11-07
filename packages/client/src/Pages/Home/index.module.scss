@@ -1,0 +1,46 @@
+.home {
+    &-top {
+        position: relative;
+        padding: 107px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 1;
+
+        &-title {
+            color: #000;
+            font-family: Poppins;
+            font-weight: 700;
+            font-size: 48px;
+        }
+
+        &-desc {
+            margin-top: 20px;
+            color: #000;
+            font-family: Poppins;
+            font-size: 24px;
+        }
+
+        &::after {
+            position: absolute;
+            content: '';
+            width: 100vw;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background-image: url('@/assets/home/top-bg.png');
+            background-size: 100% 100%;
+            z-index: -1;
+        }
+    }
+
+    &-main {
+        &-title {
+            color: #000;
+            font-family: Poppins;
+            font-weight: 700;
+            font-size: 32px;
+        }
+    }
+}
