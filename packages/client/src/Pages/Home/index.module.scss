@@ -42,5 +42,27 @@
             font-weight: 700;
             font-size: 32px;
         }
+
+        &-list {
+            margin: 20px -15px;
+            :global(.ant-row ) {
+                margin: 0 !important; 
+            }
+        }
+    }
+
+    .loading {
+        width: 162px;
+        height: 162px;
+        background-image: url('@/assets/home/loading.gif');
+        background-size: cover;
+        margin: 0 auto;
+    }
+
+    .end-text {
+        text-align: center;
+        color: #888;
+        font-family: Poppins;
+        font-size: 16px;
     }
 }
