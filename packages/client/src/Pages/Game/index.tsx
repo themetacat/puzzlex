@@ -1,3 +1,4 @@
+import GameoverModal from './components/GameoverModal';
 import $style from './index.module.scss';
 
 const Game = () => {
@@ -30,6 +31,8 @@ const Game = () => {
             <div className={$style['game-right']}>
                 <div className={$style['game-right-btn']}>New Game</div>
             </div>
+
+            <GameoverModal open={true}/>
         </div>
     )
 };
