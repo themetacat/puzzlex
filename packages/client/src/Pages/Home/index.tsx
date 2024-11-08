@@ -30,9 +30,6 @@ const Home = () => {
                     className={$style['home-main-list']}
                 >
                     <InfiniteScroll
-                        style={{
-                            // overflowX: 'hidden'
-                        }}
                         dataLength={gameList.length}
                         hasMore={gameList.length < 4}
                         loader={<div className={$style['loading']}></div>}

@@ -1,0 +1,162 @@
+.game {
+    position: relative;
+    padding: 57px 0 100px;
+    min-height: calc(100vh - 80px);
+    width: 100%;
+    background-color: transparent;
+    display: flex;
+    flex-wrap: wrap;
+
+    &::after {
+        position: absolute;
+        content: '';
+        width: 100vw;
+        height: 100%;
+        background: #CEBC9C;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 0;
+    }
+
+    &-left {
+        max-width: 275px;
+        margin-right: 28px;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+
+            .top-item {
+                padding: 0 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                height: 58px;
+                background: rgba(216, 206, 184, .8);
+                border-radius: 14px;
+                font-family: Poppins;
+                font-weight: 500;
+                font-size: 19px;
+                color: #BC8B5C;
+
+                &:first-of-type {
+                    flex: 100%;
+                }
+
+                .top-item-text {
+                    font-family: Poppins;
+                    font-weight: 500;
+                    font-size: 19px;
+                    color: #000000;
+                }
+
+                .top-item-pool {
+                    flex-shrink: 0;
+                    margin-left: 7px;
+                    margin-right: 18px;
+                    width: 22px;
+                    height: 30px;
+                    background-image: url('@/assets/game/top-pool.png');
+                    background-size: cover;
+                }
+
+                .top-item-star {
+                    flex-shrink: 0;
+                    width: 30px;
+                    height: 24px;
+                    background-image: url('@/assets/game/top-star.png');
+                    background-size: cover;
+                }
+
+                .top-item-step {
+                    flex-shrink: 0;
+                    width: 24px;
+                    height: 30px;
+                    background-image: url('@/assets/game/top-step.png');
+                    background-size: cover;
+                    margin-right: 15px;
+                }
+            }
+        }
+
+        &-bottom {
+            .bottom-value {
+                font-family: Poppins;
+                font-weight: 500;
+                font-size: 36px;
+                color: #BC8B5C;
+            }
+
+            .bottom-desc {
+                margin-top: 13px;
+                font-family: Poppins;
+                font-weight: 500;
+                font-size: 14px;
+                color: #FFFFFF;
+            }
+        }
+    }
+
+    &-right {
+        position: absolute;
+        top: calc(57px + 42px + 766px);
+        right: 0;
+        z-index: 1;
+
+        &-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 218px;
+            height: 60px;
+            font-family: Poppins;
+            font-weight: 500;
+            font-size: 25px;
+            color: #FFFFFF;
+            text-shadow: 0px 2px 1px rgba(151, 39, 0, 0.63);
+            background-image: url('@/assets/game/new-game.png');
+            background-size: contain;
+            cursor: pointer;
+        }
+    }
+
+    &-content {
+        margin-top: 42px;
+        position: relative;
+        z-index: 1;
+        width: 766px;
+        height: 766px;
+        background-image: url('@/assets/game/game-border.png');
+        background-size: cover;
+
+        &-bg1 {
+            position: absolute;
+            top: 50%;
+            left: -210px;
+            transform: translate(0, -50%);
+            width: 210px;
+            height: 656px;
+            background-image: url('@/assets/game/game-left.png');
+            background-size: cover;
+        }
+
+        &-bg2 {
+            position: absolute;
+            top: 50%;
+            right: -210px;
+            transform: translate(0, -50%);
+            width: 210px;
+            height: 656px;
+            background-image: url('@/assets/game/game-right.png');
+            background-size: cover;
+        }
+    }
+}

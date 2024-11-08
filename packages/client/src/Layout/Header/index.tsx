@@ -1,19 +1,29 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useMatch } from 'react-router-dom';
 import $style from './index.module.scss';
+import { useEffect, useState } from 'react';
 
 const Header = () => {
-
     const history = useNavigate();
-
+    const [isGamePage, setIsGamePage] = useState(false);
     const onNavigate = (path: string) => {
         history(path);
     };
+    const match = useMatch('/game/:id');
+
+    useEffect(() => {
+        if (match?.pattern.path === '/game/:id') {
+            setIsGamePage(true);
+        }
+        else {
+            setIsGamePage(false);
+        }
+    }, [match]);
 
     const onConnect = () => {};
     const onClickIcon = (path: string) => {};
 
     return (
-        <div className={$style.header}>
+        <div className={`${$style.header} ${isGamePage && $style['game']}`}>
             <div className={$style['header-left']} onClick={() => onNavigate('/')}>
                 <div className={$style['header-left-logo']}></div>
                 <div className={$style['header-left-text']}>PuzzleX</div>

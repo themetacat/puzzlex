@@ -1,7 +1,9 @@
+import $style from './index.module.scss';
+
 const CreateGame = () => {
     return (
-        <div>
-            create
+        <div className={$style['create']}>
+            <div className={$style['create-']}></div>
         </div>
     )
 };
