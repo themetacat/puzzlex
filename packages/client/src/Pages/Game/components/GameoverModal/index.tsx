@@ -3,10 +3,8 @@ import { Modal } from 'antd';
 import $style from './index.module.scss';
 
 const GameoverModal = (props: any) => {
-    const { open } = props;
-    const close = () => {
-        console.log('close');
-    };
+    const { open, close } = props;
+
     return (
         <Modal
             width={650}

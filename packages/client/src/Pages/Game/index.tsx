@@ -1,7 +1,20 @@
+import { useState } from 'react';
 import GameoverModal from './components/GameoverModal';
+import SuccessModal from './components/SuccessModal';
 import $style from './index.module.scss';
 
 const Game = () => {
+    const [isShowGameoverModal, setShowgameoverModal] = useState(false);
+    const [isShowSuccessModal, setShowSuccessModal] = useState(false);
+
+    const onCloseSuccessModal = () => {
+        setShowSuccessModal(false);
+    };
+
+    const onCloseGameoverModal = () => {
+        setShowgameoverModal(false);
+    };
+
     return (
         <div className={$style['game']}>
             <div className={$style['game-left']}>
@@ -32,7 +45,8 @@ const Game = () => {
                 <div className={$style['game-right-btn']}>New Game</div>
             </div>
 
-            <GameoverModal open={true}/>
+            <GameoverModal open={isShowGameoverModal} close={onCloseGameoverModal} />
+            <SuccessModal open={isShowSuccessModal}  close={onCloseSuccessModal}/>
         </div>
     )
 };
