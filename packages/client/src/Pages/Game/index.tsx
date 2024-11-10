@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import GameoverModal from './components/GameoverModal';
 import SuccessModal from './components/SuccessModal';
+import GameRoundModal from './components/GameRoundModal';
 import $style from './index.module.scss';
 
 const Game = () => {
@@ -47,6 +48,7 @@ const Game = () => {
 
             <GameoverModal open={isShowGameoverModal} close={onCloseGameoverModal} />
             <SuccessModal open={isShowSuccessModal}  close={onCloseSuccessModal}/>
+            <GameRoundModal open={true} />
         </div>
     )
 };
