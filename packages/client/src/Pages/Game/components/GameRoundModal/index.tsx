@@ -1,9 +1,15 @@
-import { Modal } from 'antd';
+import { Modal, Select } from 'antd';
 
 import $style from './index.module.scss';
 
 const SuccessModal = (props: any) => {
     const { open, close } = props;
+
+    const SelectOptionList = [
+        { value: 'jack', label: 'Jack' },
+        { value: 'lucy', label: 'Lucy' },
+        { value: 'Yiminghe', label: 'yiminghe' }
+    ];
 
     return (
         <Modal
@@ -17,7 +23,8 @@ const SuccessModal = (props: any) => {
             <div className={$style['modal-title']}>
                 <div className={$style['modal-title-icon']} onClick={close}></div>
                 <div className={$style['modal-title-text']}>
-                    ROUND 3
+                    {/* ROUND 3 */}
+                    <Select style={{width: '228px', height: '54px'}} options={SelectOptionList} size='large'></Select>
                 </div>
             </div>
             <div className={$style['modal-content']}>

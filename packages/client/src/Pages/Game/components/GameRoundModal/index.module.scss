@@ -206,5 +206,28 @@
             padding: 0;
             border-radius: 24px;
         }
+
+        .ant-select-selector {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .ant-select-selection-item {
+            font-family: Poppins;
+            font-size: 36px !important;
+            font-weight: 800 !important;
+            line-height: 54px !important;
+            text-align: center;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            color: #fff !important;
+        }
+
+        .ant-select-arrow {
+            font-size: 24px !important;
+            font-weight: 800;
+            color: #fff;
+        }
     }
 }
