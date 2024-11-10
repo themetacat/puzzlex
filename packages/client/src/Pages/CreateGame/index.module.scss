@@ -207,17 +207,17 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-    
+
         .form-ticket-item {
             display: flex;
             align-items: center;
             gap: 10px;
             flex: 1;
-    
+
             input {
                 flex: 100%;
             }
-    
+
             span {
                 color: #292D32;
                 font-family: Poppins;
@@ -234,5 +234,23 @@
         }
     }
 
-    
+    .form-upload {
+        margin-left: 24px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 123px;
+        height: 123px;
+        border: 1px dashed #B5B5B5;
+        border-radius: 10px;
+        background: #F6F6F6;
+
+        &-icon {
+            width: 24px;
+            height: 24px;
+            background-image: url('@/assets/profile/add.png');
+            background-size: cover;
+        }
+    }
 }

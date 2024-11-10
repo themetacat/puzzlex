@@ -41,7 +41,12 @@ const CreateGame = () => {
                                 >
                                     <Upload
                                         listType="picture-card"
-                                    />
+                                        maxCount={1}
+                                    >
+                                        <div className={$style['form-upload']}>
+                                            <div className={$style['form-upload-icon']}></div>
+                                        </div>
+                                    </Upload>
                                 </Form.Item>
                             </Form>
                             <div className={$style['main-sub']}>Once created, this information cannot be modified.</div>
