@@ -1,26 +1,52 @@
-import { useNavigate, useMatch } from 'react-router-dom';
-import $style from './index.module.scss';
 import { useEffect, useState } from 'react';
+import { useNavigate, useMatch } from 'react-router-dom';
+import { Dropdown } from 'antd';
+
+import $style from './index.module.scss';
 
 const Header = () => {
     const history = useNavigate();
     const [isGamePage, setIsGamePage] = useState(false);
+    const [isLogin, setLogin] = useState(false);
+    const [selectedKeys, setSelectKeys] = useState([] as any);
+
     const onNavigate = (path: string) => {
         history(path);
     };
-    const match = useMatch('/game/:id');
+    const matchGame = useMatch('/game/:id');
+    const matchProfile = useMatch('/profile');
 
     useEffect(() => {
-        if (match?.pattern.path === '/game/:id') {
+        if (matchGame?.pattern.path === '/game/:id') {
             setIsGamePage(true);
         }
-        else {
+        else if (matchProfile?.pattern.path === '/profile') {
+            setSelectKeys(['profile']);
             setIsGamePage(false);
         }
-    }, [match]);
+        else {
+            setSelectKeys([]);
+            setIsGamePage(false);
+        }
+    }, [matchGame, matchProfile]);
 
-    const onConnect = () => {};
-    const onClickIcon = (path: string) => {};
+    const walletMenu: any = [
+        {
+            key: 'profile',
+            label: <div >Profile</div>,
+            onClick: () => {
+                history('/profile');
+            }
+        },
+        {
+            key: 'disconnect',
+            label: <div>Disconnect</div>,
+            onClick: () => {}
+        }
+    ];
+
+    const onConnect = () => { };
+    const onClickIcon = (path: string) => { };
 
     return (
         <div className={`${$style.header} ${isGamePage && $style['game']}`}>
@@ -46,7 +72,18 @@ const Header = () => {
                     onClick={() => onClickIcon('git')}
                 ></div>
             </div>
-            <div className={$style['header-connect']} onClick={onConnect}>Connect</div>
+            {
+                !isLogin ?
+                    <div className={$style['header-connect']} onClick={onConnect}>Connect</div>
+                    :
+                    <Dropdown
+                        menu={{items: walletMenu, selectedKeys: selectedKeys}}
+                        trigger={['click']}
+                        overlayClassName={$style['header-dropdown']}
+                    >
+                        <div className={$style['header-wallet']}>sssss</div>
+                    </Dropdown>
+            }
         </div>
     )
 };
