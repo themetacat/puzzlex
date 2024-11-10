@@ -66,7 +66,20 @@ const CreateGame = () => {
                                     name="ticket"
                                     label="Ticket"
                                 >
-                                    <Input />
+                                    <div className={$style['form-ticket']}>
+                                        <Form.Item>
+                                            <div className={$style['form-ticket-item']}>
+                                                <InputNumber size='large' style={{ flex: 1, borderRadius: '6px' }} />
+                                                <span>ETH</span>
+                                            </div>
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <div className={$style['form-ticket-item']}>
+                                                <InputNumber size='large' style={{ flex: 1, borderRadius: '6px' }}/>
+                                                <span>Plays</span>
+                                            </div>
+                                        </Form.Item>
+                                    </div>
                                 </Form.Item>
                                 <div className={$style['main-message']}>80% rewards players，10% to the platform，10% to the game creator</div>
                                 <Form.Item

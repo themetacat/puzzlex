@@ -201,4 +201,38 @@
             }
         }
     }
+
+    .form-ticket {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    
+        .form-ticket-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+    
+            input {
+                flex: 100%;
+            }
+    
+            span {
+                color: #292D32;
+                font-family: Poppins;
+                font-size: 18px;
+                font-weight: 400;
+                line-height: 27px;
+            }
+        }
+
+        :global {
+            .ant-form-item {
+                flex: 1;
+            }
+        }
+    }
+
+    
 }
