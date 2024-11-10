@@ -2,16 +2,39 @@ import { List } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import GameCard from './components/GameCard';
 import $style from './index.module.scss';
+import { useEffect, useState } from 'react';
 
 const listGrid = {
     column: 2,
     gutter: 30
 };
 
-const Home = () => {
-    const gameList = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }];
+const resList = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }];
 
-    const onNext = () => {};
+const Home = () => {
+    const [gameList, setGameList] = useState([] as any);
+    const [isHasMore, setHasMore] = useState(true);
+    const [isLoading, setLoading] = useState(false);
+
+    const getGameList = () => {
+        if (isLoading || !isHasMore) return;
+
+        setLoading(true);
+
+        setTimeout(() => {
+            setGameList([...gameList, ...resList]);
+            if (gameList.length > 20) {
+                setHasMore(false);
+            } else {
+                setHasMore(true);
+            }
+            setLoading(false);
+        }, 1000);
+    };
+
+    useEffect(() => {
+        getGameList();
+    }, []);
 
     return (
         <div className={$style['home']}>
@@ -31,9 +54,9 @@ const Home = () => {
                 >
                     <InfiniteScroll
                         dataLength={gameList.length}
-                        hasMore={gameList.length < 4}
+                        hasMore={isHasMore}
                         loader={<div className={$style['loading']}></div>}
-                        next={() => onNext()}
+                        next={() => getGameList()}
                         endMessage={<div className={$style['end-text']}>All Caught Up!</div>}
                     >
                     <List
