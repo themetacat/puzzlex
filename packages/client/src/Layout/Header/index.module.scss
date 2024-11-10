@@ -137,7 +137,17 @@
     }
 
     .icon-x {
-        background-image: url('@/assets/header/create-x.png');
+        background-image: url('@/assets/header/game-x.png');
+        background-size: cover;
+    }
+
+    .icon-feishu {
+        background-image: url('@/assets/header/game-feishu.png');
+        background-size: cover;
+    }
+
+    .icon-git {
+        background-image: url('@/assets/header/game-github.png');
         background-size: cover;
     }
 
@@ -148,7 +158,7 @@
         content: '';
         bottom: -14px;
         left: 50%;
-        background-image: url('@/assets/header/create-after.png');
+        background-image: url('@/assets/header/game-after.png');
         background-size: cover;
         transform: translate(-50%, 0);
     }

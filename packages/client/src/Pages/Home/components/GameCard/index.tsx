@@ -1,8 +1,15 @@
+import {useNavigate} from 'react-router-dom';
 import $style from './index.module.scss';
 
 const GameCard = () => {
+    const history = useNavigate();
+
+    const handleClick = () => {
+        history('/game/aas');
+    };
+
     return (
-        <div className={$style['card']}>
+        <div className={$style['card']} onClick={handleClick}>
             <div className={$style['card-avatar']}>
                 <div className={$style['card-avatar-content']}>
                     <div className={$style['content-item']}>

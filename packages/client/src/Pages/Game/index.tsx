@@ -7,6 +7,7 @@ import $style from './index.module.scss';
 const Game = () => {
     const [isShowGameoverModal, setShowgameoverModal] = useState(false);
     const [isShowSuccessModal, setShowSuccessModal] = useState(false);
+    const [isShowRoundModal, setShowRoundModal] = useState(true);
 
     const onCloseSuccessModal = () => {
         setShowSuccessModal(false);
@@ -14,6 +15,10 @@ const Game = () => {
 
     const onCloseGameoverModal = () => {
         setShowgameoverModal(false);
+    };
+
+    const onCloseRoundModal = () => {
+        setShowRoundModal(false);
     };
 
     return (
@@ -48,7 +53,7 @@ const Game = () => {
 
             <GameoverModal open={isShowGameoverModal} close={onCloseGameoverModal} />
             <SuccessModal open={isShowSuccessModal}  close={onCloseSuccessModal}/>
-            <GameRoundModal open={true} />
+            <GameRoundModal open={isShowRoundModal} close={onCloseRoundModal}/>
         </div>
     )
 };
