@@ -1,8 +1,12 @@
-import { Form, Input, InputNumber, Select, Space, Upload } from 'antd';
+import { Form, Input, InputNumber, Select, Space } from 'antd';
+import SelectImageModal from './components/SelectImageModal';
+import EditImageModal from './components/EditImageModal';
 import $style from './index.module.scss';
+import { useState } from 'react';
 
 const CreateGame = () => {
     const [form] = Form.useForm();
+    const [isShowSelectModal, setShowSelectModal] = useState(false);
 
     const layout = {
         labelCol: { span: 8 },
@@ -39,14 +43,9 @@ const CreateGame = () => {
                                     label="Game foreground image."
                                     rules={[{ required: true, message: 'Please input first name' }]}
                                 >
-                                    <Upload
-                                        listType="picture-card"
-                                        maxCount={1}
-                                    >
-                                        <div className={$style['form-upload']}>
-                                            <div className={$style['form-upload-icon']}></div>
-                                        </div>
-                                    </Upload>
+                                    <div className={$style['form-upload']}>
+                                        <div className={$style['form-upload-icon']}></div>
+                                    </div>
                                 </Form.Item>
                             </Form>
                             <div className={$style['main-sub']}>Once created, this information cannot be modified.</div>
@@ -80,7 +79,7 @@ const CreateGame = () => {
                                         </Form.Item>
                                         <Form.Item>
                                             <div className={$style['form-ticket-item']}>
-                                                <InputNumber size='large' style={{ flex: 1, borderRadius: '6px' }}/>
+                                                <InputNumber size='large' style={{ flex: 1, borderRadius: '6px' }} />
                                                 <span>Plays</span>
                                             </div>
                                         </Form.Item>
@@ -121,6 +120,9 @@ const CreateGame = () => {
                     </div>
                 </div>
             </div>
+
+            <SelectImageModal open={isShowSelectModal} cancel={() => setShowSelectModal(false)} />
+            <EditImageModal open={true} />
         </div>
     )
 };

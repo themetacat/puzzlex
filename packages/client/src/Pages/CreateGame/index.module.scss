@@ -235,16 +235,15 @@
     }
 
     .form-upload {
-        margin-left: 24px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 123px;
         height: 123px;
-        border: 1px dashed #B5B5B5;
         border-radius: 10px;
         background: #F6F6F6;
+        cursor: pointer;
 
         &-icon {
             width: 24px;
