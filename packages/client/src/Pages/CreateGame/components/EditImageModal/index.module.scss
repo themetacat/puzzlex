@@ -8,6 +8,10 @@
         .ant-modal-body {
             padding: 20px;
         }
+
+        .cropper-modal {
+            background: #fff;
+        }
     }
 
     &-content {
@@ -27,6 +31,7 @@
             height: 47px;
             border-radius: 8px;
             background: #BFBFBF;
+            overflow: hidden;
         }
 
         &-right {
