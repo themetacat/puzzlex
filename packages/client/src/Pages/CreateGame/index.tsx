@@ -7,10 +7,29 @@ import { useState } from 'react';
 const CreateGame = () => {
     const [form] = Form.useForm();
     const [isShowSelectModal, setShowSelectModal] = useState(false);
+    const [isShowEditModal, setShowEditModal] = useState(false);
 
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
+    };
+
+    const onSelectModalOk = (data: string) => {
+        setShowSelectModal(false);
+        setShowEditModal(true);
+    };
+
+    const onEditModalOk = (imgData: string) => {
+        setShowEditModal(false);
+    };
+
+    const onEditBack = () => {
+        setShowEditModal(false);
+        setShowSelectModal(true);
+    };
+
+    const onUploadClick = () => {
+        setShowSelectModal(true);
     };
 
     return (
@@ -43,7 +62,7 @@ const CreateGame = () => {
                                     label="Game foreground image."
                                     rules={[{ required: true, message: 'Please input first name' }]}
                                 >
-                                    <div className={$style['form-upload']}>
+                                    <div className={$style['form-upload']} onClick={onUploadClick}>
                                         <div className={$style['form-upload-icon']}></div>
                                     </div>
                                 </Form.Item>
@@ -121,8 +140,8 @@ const CreateGame = () => {
                 </div>
             </div>
 
-            <SelectImageModal open={isShowSelectModal} cancel={() => setShowSelectModal(false)} />
-            <EditImageModal open={true} />
+            <SelectImageModal open={isShowSelectModal} cancel={() => setShowSelectModal(false)} onOk={onSelectModalOk} />
+            <EditImageModal open={isShowEditModal} onBack={onEditBack} onOk={onEditModalOk}/>
         </div>
     )
 };

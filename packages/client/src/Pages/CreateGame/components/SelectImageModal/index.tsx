@@ -8,7 +8,7 @@ const listGrid = {
 };
 
 const SelectImageModal = (props: any) => {
-    const { open, cancel, onNext } = props;
+    const { open, cancel, onOk } = props;
     const imgList = [
         {},
         {},
@@ -16,6 +16,11 @@ const SelectImageModal = (props: any) => {
         {},
         {}
     ];
+
+    const onNext = () => {
+        const selectImg = 'xxxxx';
+        onOk(selectImg);
+    };
 
     return (
         <Modal

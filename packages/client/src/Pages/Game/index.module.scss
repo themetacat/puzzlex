@@ -6,6 +6,7 @@
     background-color: transparent;
     display: flex;
     flex-wrap: wrap;
+    box-sizing: border-box;
 
     &::after {
         position: absolute;
