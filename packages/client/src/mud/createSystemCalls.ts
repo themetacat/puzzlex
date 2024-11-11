@@ -11,7 +11,7 @@ import {
   encodeEntity,
   decodeEntity,
 } from "@latticexyz/store-sync/recs";
-import { Hex, fromBytes, hexToString, isHex } from "viem";
+import { Hex, parseEther } from "viem";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -38,16 +38,13 @@ export function createSystemCalls(
   { worldContract, waitForTransaction, publicClient }: SetupNetworkResult,
   { Puzzle }: ClientComponents,
 ) {
-  const increment = async () => {
-    /*
-     * Because IncrementSystem
-     * (https://mud.dev/templates/typescript/contracts#incrementsystemsol)
-     * is in the root namespace, `.increment` can be called directly
-     * on the World contract.
-     */
-    
+  const addressToEntityID = (address: Hex) =>
+    encodeEntity({ address: "address" }, { address });
+
+  const setup = async () => {
+
     try {
-      const tx = await worldContract.write.createGame([4]);
+      const tx = await worldContract.write.setup([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}, parseEther('0.004'), 2n, 300n, 2n]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -59,10 +56,76 @@ export function createSystemCalls(
     
     return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
   };
-  const addressToEntityID = (address: Hex) =>
-    encodeEntity({ address: "address" }, { address });
+
+  const purchase = async () => {
+    
+    try {
+      const tx = await worldContract.write.purchase([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1}],{value: parseEther("0.004")});
+      const res = await publicClient.waitForTransactionReceipt({ hash: tx });
+      console.log(res);
+      
+      await waitForTransaction(tx)
+
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+
+  const createGame = async () => {
+    
+    try {
+      const tx = await worldContract.write.createGame([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}]);
+      const res = await publicClient.waitForTransactionReceipt({ hash: tx });
+      console.log(res);
+      
+      await waitForTransaction(tx)
+
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+
+  const move = async () => {
+    
+    try {
+      const tx = await worldContract.write.move([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n},[1n],[3n]]);
+      const res = await publicClient.waitForTransactionReceipt({ hash: tx });
+      console.log(res);
+      
+      await waitForTransaction(tx)
+
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+
+  const startRound = async () => {
+    
+    try {
+      const tx = await worldContract.write.startRound([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}]);
+      const res = await publicClient.waitForTransactionReceipt({ hash: tx });
+      console.log(res);
+      
+      await waitForTransaction(tx)
+
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
 
   return {
-    increment,
+    setup,
+    purchase,
+    createGame,
+    move,
+    startRound
   };
 }

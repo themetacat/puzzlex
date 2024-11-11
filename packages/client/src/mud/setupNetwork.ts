@@ -14,7 +14,6 @@ import {
   getContract,
 } from "viem";
 import { encodeEntity, syncToRecs } from "@latticexyz/store-sync/recs";
-
 import { getNetworkConfig } from "./getNetworkConfig";
 import { world } from "./world";
 import IWorldAbi from "contracts/out/IWorld.sol/IWorld.abi.json";
@@ -37,7 +36,6 @@ export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
 
 export async function setupNetwork() {
   const networkConfig = await getNetworkConfig();
-
   /*
    * Create a viem public (read only) client
    * (https://viem.sh/docs/clients/public.html)

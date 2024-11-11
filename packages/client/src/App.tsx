@@ -5,7 +5,7 @@ import { singletonEntity } from "@latticexyz/store-sync/recs";
 export const App = () => {
   const {
     components: { Puzzle },
-    systemCalls: { increment },
+    systemCalls: { setup, purchase, createGame, move, startRound },
   } = useMUD();
 
   const counter = useComponentValue(Puzzle, singletonEntity);
@@ -19,10 +19,46 @@ export const App = () => {
         type="button"
         onClick={async (event) => {
           event.preventDefault();
-          console.log("new counter value:", await increment());
+          console.log("new counter value:", await setup());
         }}
       >
-        Increment
+        setup
+      </button>
+      <button
+        type="button"
+        onClick={async (event) => {
+          event.preventDefault();
+          console.log("new counter value:", await startRound());
+        }}
+      >
+        startRound
+      </button>
+      <button
+        type="button"
+        onClick={async (event) => {
+          event.preventDefault();
+          console.log("new counter value:", await purchase());
+        }}
+      >
+        buy
+      </button>
+      <button
+        type="button"
+        onClick={async (event) => {
+          event.preventDefault();
+          console.log("new counter value:", await createGame());
+        }}
+      >
+        create
+      </button>
+      <button
+        type="button"
+        onClick={async (event) => {
+          event.preventDefault();
+          console.log("new counter value:", await move());
+        }}
+      >
+        move
       </button>
     </>
   );
