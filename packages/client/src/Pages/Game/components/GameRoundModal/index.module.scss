@@ -1,0 +1,233 @@
+.modal {
+    position: relative;
+
+    &-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        width: 100%;
+        height: 84px;
+        background-image: url('@/assets/game/modal-title.png');
+        background-size: cover;
+
+        &-icon {
+            cursor: pointer;
+            z-index: 1;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 46px;
+            height: 46px;
+            background-image: url('@/assets/game/modal-close.png');
+            background-size: cover;
+        }
+
+        &-text {
+            font-family: Poppins;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 54px;
+            text-align: center;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            color: #fff;
+        }
+    }
+
+    &-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 660px;
+        background-image: url('@/assets/game/modal-game-round.png');
+        background-size: cover;
+        background-position: bottom;
+
+        &-box {
+            width: 640px;
+            margin: 0 auto;
+
+            .box-block {
+                margin-top: 21px;
+                display: flex;
+                justify-content: space-between;
+                padding: 30px;
+                background: #DBCCB5;
+                border-radius: 20px;
+
+                &-item {
+                    background: #F6F6F6;
+                    padding: 17px 25px;
+                    border-radius: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .item-left {
+                        display: flex;
+                        justify-content: space-between;
+                        flex-direction: column;
+                        margin-right: 10px;
+
+                        .left-value {
+                            font-family: Poppins;
+                            font-size: 20px;
+                            font-weight: 700;
+                            line-height: 30px;
+                            text-align: left;
+                            color: #292D32;
+                        }
+
+                        .left-title {
+                            margin-top: 10px;
+                            font-family: Poppins;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 24px;
+                            text-align: left;
+                            text-underline-position: from-font;
+                            text-decoration-skip-ink: none;
+                            color: #808080;
+                        }
+                    }
+
+                    .item-right {
+                        display: flex;
+                        justify-content: space-between;
+                        flex-direction: column;
+                        align-items: center;
+
+                        .right-value {
+                            position: relative;
+                            font-family: Poppins;
+                            font-size: 20px;
+                            font-weight: 700;
+                            line-height: 30px;
+                            text-align: left;
+                            color: #292D32;
+                            padding-right: 38px;
+
+                            &::after {
+                                position: absolute;
+                                right: 0;
+                                content: '';
+                                width: 28px;
+                                height: 28px;
+                                background-image: url('@/assets/game/modal-round-pool.png');
+                                background-size: 100% 100%;
+                            }
+                        }
+
+                        .right-title {
+                            margin-top: 10px;
+                            font-family: Poppins;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 24px;
+                            text-align: left;
+                            text-underline-position: from-font;
+                            text-decoration-skip-ink: none;
+                            color: #808080;
+                        }
+                    }
+
+                    &:last-of-type {
+                        .item-left {
+                            align-items: flex-start;
+                        }
+
+                        .left-title {
+                            position: relative;
+                            margin-top: 0;
+                            margin-bottom: 10px;
+                            padding-right: 38px;
+
+                            &::after {
+                                position: absolute;
+                                right: 0;
+                                content: '';
+                                width: 28px;
+                                height: 28px;
+                                background-image: url('@/assets/game/modal-round-pool.png');
+                                background-size: 100% 100%;
+                            }
+                        }
+
+                        .item-right {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 95px;
+                            height: 47px;
+                            font-family: Poppins;
+                            font-size: 18px;
+                            font-weight: 600;
+                            line-height: 27px;
+                            text-align: center;
+                            background: rgba(50, 151, 252, 0.1);
+                            border-radius: 130px;
+                            color: #3297FC;
+                        }
+                    }
+                }
+            }
+        }
+
+        &-bottom {
+            width: 611px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 10px 0px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+
+            .bottom-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                font-family: Poppins;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 24px;
+                text-align: center;
+                text-underline-position: from-font;
+                text-decoration-skip-ink: none;
+                color: #292D32;
+            }
+        }
+    }
+
+    :global {
+        .ant-modal-content {
+            padding: 0;
+            border-radius: 24px;
+        }
+
+        .ant-select-selector {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .ant-select-selection-item {
+            font-family: Poppins;
+            font-size: 36px !important;
+            font-weight: 800 !important;
+            line-height: 54px !important;
+            text-align: center;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            color: #fff !important;
+        }
+
+        .ant-select-arrow {
+            font-size: 24px !important;
+            font-weight: 800;
+            color: #fff;
+        }
+    }
+}

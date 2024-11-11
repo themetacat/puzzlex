@@ -1,0 +1,212 @@
+.header {
+    position: relative;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    background: transparent;
+    z-index: 1;
+
+    &::after {
+        position: absolute;
+        width: 100vw;
+        height: 1px;
+        content: '';
+        border-bottom: 1px solid rgba(236, 236, 236, 1);
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    &-left {
+        z-index: 1;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &-logo {
+            width: 60px;
+            height: 30px;
+            background-image: url('@/assets/header/logo.png');
+            background-size: 100% 100%;
+        }
+
+        &-text {
+            color: #000;
+            font-family: Poppins;
+            font-weight: 500;
+            font-size: 20px;
+        }
+    }
+
+    &-menu {
+        z-index: 1;
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        flex: 1;
+        gap: 50px;
+
+        &-item {
+            font-family: Poppins;
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 30px;
+            text-align: center;
+            transition: all .3s ease;
+            cursor: pointer;
+
+            &:hover {
+                color: rgba(28, 134, 240, 1);
+            }
+        }
+    }
+
+    &-right {
+        z-index: 1;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 50px;
+
+        &-item {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.2);
+            }
+        }
+
+        .icon-x {
+            background-image: url('@/assets/header/x.png');
+            background-size: cover;
+        }
+
+        .icon-feishu {
+            background-image: url('@/assets/header/feishu.png');
+            background-size: cover;
+        }
+
+        .icon-git {
+            background-image: url('@/assets/header/github.png');
+            background-size: cover;
+        }
+    }
+
+    &-connect {
+        flex-shrink: 0;
+        margin-left: 50px;
+        font-family: Poppins;
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        width: 148px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #3297FC;
+        transition: all .3s ease;
+        border-radius: 130px;
+        color: #fff;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(28, 134, 240, 1);
+        }
+    }
+
+    &-wallet {
+        flex-shrink: 0;
+        margin-left: 50px;
+        color: #3297FC;
+        padding: 0 30px;
+        height: 50px;
+        background: #fff;
+        border-radius: 130px;
+        border: 1px solid #3297FC;
+        font-family: Poppins;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 50px;
+        cursor: pointer;
+    }
+}
+
+.game {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        content: '';
+        width: 100vw;
+        height: 100%;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        background: linear-gradient(180deg, #9E8453, #C1AF71);
+        z-index: -1;
+    }
+
+    .icon-x {
+        background-image: url('@/assets/header/game-x.png');
+        background-size: cover;
+    }
+
+    .icon-feishu {
+        background-image: url('@/assets/header/game-feishu.png');
+        background-size: cover;
+    }
+
+    .icon-git {
+        background-image: url('@/assets/header/game-github.png');
+        background-size: cover;
+    }
+
+    &::after {
+        position: absolute;
+        width: 100vw;
+        height: 14px;
+        content: '';
+        bottom: -14px;
+        left: 50%;
+        background-image: url('@/assets/header/game-after.png');
+        border-bottom: none;
+        background-size: cover;
+        transform: translate(-50%, 0);
+    }
+}
+
+.header-dropdown {
+
+    :global {
+        .ant-dropdown-menu {
+            padding: 20px;
+
+            .ant-dropdown-menu-item {
+                width: 276px;
+                padding: 10px 15px;
+                font-family: Poppins;
+                font-size: 18px;
+                font-weight: 400;
+                line-height: 27px;
+                color: #000000;
+                box-sizing: border-box;
+                margin-bottom: 10px;
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+            }
+
+            .ant-dropdown-menu-item-selected {
+                color: #fff;
+                background: #3297FC;
+            }
+        }
+    }
+}
