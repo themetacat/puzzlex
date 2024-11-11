@@ -63,6 +63,9 @@ const Home = () => {
                         grid={listGrid}
                         dataSource={gameList}
                         itemLayout='horizontal'
+                        locale={{
+                            emptyText: <></>
+                        }}
                         renderItem={(item: any) => {
                             return (
                                 <List.Item key={item.id} style={{
