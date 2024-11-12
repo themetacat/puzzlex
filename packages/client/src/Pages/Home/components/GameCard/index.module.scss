@@ -55,6 +55,11 @@
                 height: 24px;
                 background-image: url('@/assets/home/game-card-star.png');
                 background-size: cover;
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    transform: scale(1.2);
+                }
             }
         }
 

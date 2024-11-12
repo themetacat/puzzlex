@@ -21,6 +21,11 @@
             height: 46px;
             background-image: url('@/assets/game/modal-close.png');
             background-size: cover;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.2);
+            }
         }
 
         &-text {
@@ -46,7 +51,7 @@
         background-position: bottom;
 
         &-box {
-            width: 640px;
+            width: 670px;
             margin: 0 auto;
 
             .box-block {
@@ -177,7 +182,7 @@
 
         &-bottom {
             width: 611px;
-            margin: 0 auto;
+            margin: 20px auto 0;
             display: flex;
             align-items: center;
             padding: 10px 0px;

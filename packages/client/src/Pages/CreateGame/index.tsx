@@ -70,7 +70,7 @@ const CreateGame = () => {
                             <div className={$style['main-sub']}>Once created, this information cannot be modified.</div>
                         </div>
                     </div>
-                    <div className={$style['left-form']}>
+                    <div className={`${$style['left-form']} ${$style['left-setup']}`}>
                         <div className={$style['left-form-title']}>Setup</div>
                         <div className={$style['left-form-main']}>
                             <Form

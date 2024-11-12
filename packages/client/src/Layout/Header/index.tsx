@@ -55,7 +55,7 @@ const Header = () => {
                 <div className={$style['header-left-text']}>PuzzleX</div>
             </div>
             <div className={$style['header-menu']}>
-                <div className={$style['header-menu-item']} onClick={() => onNavigate('/')}>PuzzleX</div>
+                <div className={$style['header-menu-item']} onClick={() => onNavigate('/')}>Puzzles</div>
                 <div className={$style['header-menu-item']} onClick={() => onNavigate('/create-game')}>Create</div>
             </div>
             <div className={$style['header-right']}>

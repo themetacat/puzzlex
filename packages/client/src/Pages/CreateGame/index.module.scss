@@ -17,6 +17,10 @@
         &-left {
             flex: 1;
             min-width: 825px;
+            
+            .left-form.left-setup {
+                background: #F6F6F6;
+            }
 
             .left-form {
                 padding: 30px;
@@ -24,10 +28,6 @@
                 box-shadow: 0px 10px 37px 0px #959DA533;
                 margin-bottom: 30px;
                 border-radius: 20px;
-
-                &:last-of-type {
-                    background: #F6F6F6;
-                }
 
                 &-title {
                     font-family: Poppins;

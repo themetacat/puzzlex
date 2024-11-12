@@ -59,10 +59,13 @@
                     color: #000000;
                 }
 
+                .top-item-value {
+                    margin-left: 18px;
+                    margin-right: 7px;
+                }
+
                 .top-item-pool {
                     flex-shrink: 0;
-                    margin-left: 7px;
-                    margin-right: 18px;
                     width: 22px;
                     height: 30px;
                     background-image: url('@/assets/game/top-pool.png');
@@ -75,6 +78,12 @@
                     height: 24px;
                     background-image: url('@/assets/game/top-star.png');
                     background-size: cover;
+                    transition: transform 0.3s ease;
+                    cursor: pointer;
+
+                    &:hover {
+                        transform: scale(1.2);
+                    }
                 }
 
                 .top-item-step {
