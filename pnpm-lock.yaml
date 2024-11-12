@@ -68,6 +68,9 @@ importers:
       '@latticexyz/world':
         specifier: 2.2.14
         version: 2.2.14(@aws-sdk/client-kms@3.682.0)(asn1.js@5.4.1)(bufferutil@4.0.8)(typescript@5.4.2)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@rainbow-me/rainbowkit':
+        specifier: ^2.2.0
+        version: 2.2.0(@tanstack/react-query@5.59.16(react@18.3.1))(@types/react@18.2.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.21.19(bufferutil@4.0.8)(typescript@5.4.2)(utf-8-validate@5.0.10)(zod@3.23.8))(wagmi@2.12.11(@tanstack/query-core@5.59.16)(@tanstack/react-query@5.59.16(react@18.3.1))(@types/react@18.2.22)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.22)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@3.29.5)(typescript@5.4.2)(utf-8-validate@5.0.10)(viem@2.21.19(bufferutil@4.0.8)(typescript@5.4.2)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))
       antd:
         specifier: ^5.21.6
         version: 5.21.6(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -156,10 +159,10 @@ importers:
         version: 18.19.62
       ds-test:
         specifier: https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0
-        version: git+https://git@github.com:dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0
+        version: https://codeload.github.com/dapphub/ds-test/tar.gz/e282159d5170298eb2455a6c05280ab5a73a4ef0
       forge-std:
         specifier: https://github.com/foundry-rs/forge-std.git#74cfb77e308dd188d2f58864aaf44963ae6b88b1
-        version: git+https://git@github.com:foundry-rs/forge-std.git#74cfb77e308dd188d2f58864aaf44963ae6b88b1
+        version: https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1
       prettier:
         specifier: 3.2.5
         version: 3.2.5
@@ -4266,8 +4269,8 @@ packages:
       sqlite3:
         optional: true
 
-  ds-test@git+https://git@github.com:dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0:
-    resolution: {commit: e282159d5170298eb2455a6c05280ab5a73a4ef0, repo: git@github.com:dapphub/ds-test.git, type: git}
+  ds-test@https://codeload.github.com/dapphub/ds-test/tar.gz/e282159d5170298eb2455a6c05280ab5a73a4ef0:
+    resolution: {tarball: https://codeload.github.com/dapphub/ds-test/tar.gz/e282159d5170298eb2455a6c05280ab5a73a4ef0}
     version: 1.0.0
 
   duplexify@4.1.3:
@@ -4598,8 +4601,8 @@ packages:
     resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==, tarball: https://registry.npmmirror.com/foreground-child/-/foreground-child-3.3.0.tgz}
     engines: {node: '>=14'}
 
-  forge-std@git+https://git@github.com:foundry-rs/forge-std.git#74cfb77e308dd188d2f58864aaf44963ae6b88b1:
-    resolution: {commit: 74cfb77e308dd188d2f58864aaf44963ae6b88b1, repo: git@github.com:foundry-rs/forge-std.git, type: git}
+  forge-std@https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1:
+    resolution: {tarball: https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1}
     version: 1.6.0
 
   fresh@0.5.2:
@@ -13162,7 +13165,7 @@ snapshots:
       postgres: 3.4.5
       sql.js: 1.12.0
 
-  ds-test@git+https://git@github.com:dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0: {}
+  ds-test@https://codeload.github.com/dapphub/ds-test/tar.gz/e282159d5170298eb2455a6c05280ab5a73a4ef0: {}
 
   duplexify@4.1.3:
     dependencies:
@@ -13664,7 +13667,7 @@ snapshots:
       cross-spawn: 7.0.3
       signal-exit: 4.1.0
 
-  forge-std@git+https://git@github.com:foundry-rs/forge-std.git#74cfb77e308dd188d2f58864aaf44963ae6b88b1: {}
+  forge-std@https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1: {}
 
   fresh@0.5.2: {}
 
@@ -15666,7 +15669,7 @@ snapshots:
   react-remove-scroll@2.5.7(@types/react@18.2.22)(react@18.3.1):
     dependencies:
       react: 18.3.1
-      react-remove-scroll-bar: 2.3.4(@types/react@18.2.22)(react@18.3.1)
+      react-remove-scroll-bar: 2.3.6(@types/react@18.2.22)(react@18.3.1)
       react-style-singleton: 2.2.1(@types/react@18.2.22)(react@18.3.1)
       tslib: 2.8.0
       use-callback-ref: 1.3.2(@types/react@18.2.22)(react@18.3.1)
