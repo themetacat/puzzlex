@@ -21,6 +21,11 @@
             height: 46px;
             background-image: url('@/assets/game/modal-close.png');
             background-size: cover;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.2);
+            }
         }
 
         &-text {

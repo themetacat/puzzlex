@@ -1,6 +1,7 @@
 import { List } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import GameCard from './components/GameCard';
+import GameRoundModal from '../Game/components/GameRoundModal';
 import $style from './index.module.scss';
 import { useEffect, useState } from 'react';
 
@@ -15,6 +16,7 @@ const Home = () => {
     const [gameList, setGameList] = useState([] as any);
     const [isHasMore, setHasMore] = useState(true);
     const [isLoading, setLoading] = useState(false);
+    const [isShowRoundModal, setShowRoundModal] = useState(false);
 
     const getGameList = () => {
         if (isLoading || !isHasMore) return;
@@ -71,7 +73,7 @@ const Home = () => {
                                 <List.Item key={item.id} style={{
                                     marginBottom: '30px'
                                 }}>
-                                    <GameCard />
+                                    <GameCard clickRound={() => setShowRoundModal(true)} />
                                 </List.Item>
                             )
                         }}
@@ -81,6 +83,7 @@ const Home = () => {
                    
                 </div>
             </div>
+            <GameRoundModal open={isShowRoundModal} close={() => setShowRoundModal(false)} />
         </div>
     )
 };

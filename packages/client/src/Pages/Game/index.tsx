@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// import GameContent from './components/GameContent';
 import GameoverModal from './components/GameoverModal';
 import SuccessModal from './components/SuccessModal';
 import GameRoundModal from './components/GameRoundModal';
@@ -27,11 +28,11 @@ const Game = () => {
                 <div className={$style['game-left-top']}>
                     <div className={$style['top-item']}>
                         <div className={$style['top-item-text']}>Pool Rewards</div>
-                        <div className={$style['top-item-pool']}></div>
                         <div className={$style['top-item-value']}>0.0321</div>
+                        <div className={$style['top-item-pool']}></div>
                     </div>
                     <div className={$style['top-item']}>
-                        <div className={$style['top-item-star']}></div>
+                        <div className={$style['top-item-star']} onClick={() => setShowRoundModal(true)}></div>
                     </div>
                     <div className={$style['top-item']}>
                         <div className={$style['top-item-step']}></div>
@@ -46,6 +47,7 @@ const Game = () => {
             <div className={$style['game-content']}>
                 <div className={$style['game-content-bg1']}></div>
                 <div className={$style['game-content-bg2']}></div>
+                {/* <GameContent rows={3} /> */}
             </div>
             <div className={$style['game-right']}>
                 <div className={$style['game-right-btn']}>New Game</div>

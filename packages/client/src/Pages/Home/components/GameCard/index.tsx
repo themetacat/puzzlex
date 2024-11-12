@@ -1,11 +1,17 @@
 import {useNavigate} from 'react-router-dom';
 import $style from './index.module.scss';
 
-const GameCard = () => {
+const GameCard = (props: any) => {
+    const {clickRound} = props;
     const history = useNavigate();
 
     const handleClick = () => {
         history('/game/aas');
+    };
+
+    const onRoundShow = (e: any) => {
+        e.stopPropagation();
+        clickRound();
     };
 
     return (
@@ -23,7 +29,7 @@ const GameCard = () => {
             <div className={$style['card-main']}>
                 <div className={$style['card-main-title']}>
                     <div className={$style['title-text']}>Wool Pouch (Blast)</div>
-                    <div className={$style['title-icon']}></div>
+                    <div className={$style['title-icon']} onClick={(e) => onRoundShow(e)}></div>
                 </div>
                 <div className={$style['card-main-message']}>
                     <div className={$style['message-item']}>
@@ -42,7 +48,7 @@ const GameCard = () => {
                     </div>
                 </div>
                 <div className={$style['card-main-price']}>
-                    <div className={$style['price-value']}>0.005ETH</div>
+                    <div className={$style['price-value']}>0.005 ETH</div>
                     <div className={$style['price-unit']}>
                         / 3 plays
                     </div>
