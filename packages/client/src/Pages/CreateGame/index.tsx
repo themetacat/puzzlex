@@ -55,7 +55,7 @@ const CreateGame = () => {
                                     label="Name"
                                     rules={[{ required: true, message: 'Please input first name' }]}
                                 >
-                                    <Input placeholder='Please enter' size='large' />
+                                    <Input placeholder='Please enter' size='large' variant="filled" />
                                 </Form.Item>
                                 <Form.Item
                                     name="image"
