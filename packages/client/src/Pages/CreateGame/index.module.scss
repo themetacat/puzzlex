@@ -134,6 +134,22 @@
                             height: 56px !important;
                         }
                     }
+
+                    // .ant-input-borderless {
+                    //     background: #F6F6F6;
+                    // }
+
+                    .ant-input-filled  {
+                        background: #F6F6F6;
+                    }
+
+                    input::placeholder {
+                        color: #B5B5B5 !important;
+                    }
+
+                    // input:not([value=""]) {
+                    //     background: transparent;
+                    // }
                 }
             }
 
