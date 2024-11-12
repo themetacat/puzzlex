@@ -131,6 +131,9 @@
 
     &-content {
         margin-top: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
         z-index: 1;
         width: 766px;
