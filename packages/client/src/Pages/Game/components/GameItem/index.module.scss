@@ -1,0 +1,10 @@
+.game-item {
+    position: absolute;
+    z-index: 1;
+    transition: all .2s ease;
+}
+
+.active {
+    z-index: 100 !important;
+    transform: scale(1.05);
+}

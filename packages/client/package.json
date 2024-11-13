@@ -33,6 +33,7 @@
     "sass": "^1.80.6",
     "scss": "^0.2.4",
     "style-loader": "^4.0.0",
+    "uuid": "^11.0.3",
     "viem": "2.21.19"
   },
   "devDependencies": {

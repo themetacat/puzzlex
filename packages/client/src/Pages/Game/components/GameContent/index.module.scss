@@ -1,0 +1,9 @@
+.game-wrapper {
+    position: relative;
+    box-sizing: border-box;
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    border-radius: 20px;
+    overflow: hidden;
+    background: #F6F6F6;
+}

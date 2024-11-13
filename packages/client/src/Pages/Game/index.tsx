@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import GameContent from './components/GameContent';
+import GameContent from './components/GameContent';
 import GameoverModal from './components/GameoverModal';
 import SuccessModal from './components/SuccessModal';
 import GameRoundModal from './components/GameRoundModal';
@@ -48,7 +48,7 @@ const Game = () => {
                 <div className={$style['game-main-content']}>
                     <div className={$style['content-bg1']}></div>
                     <div className={$style['content-bg2']}></div>
-                    {/* <GameContent rows={3} /> */}
+                    <GameContent rows={4} />
                 </div>
                 <div className={$style['game-main-right']}>
                     <div className={$style['right-btn']}>New Game</div>
