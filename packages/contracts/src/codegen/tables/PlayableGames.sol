@@ -16,17 +16,22 @@ import { Schema } from "@latticexyz/store/src/Schema.sol";
 import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/EncodedLengths.sol";
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
+struct PlayableGamesData {
+  uint256 times;
+  uint256 ticket;
+}
+
 library PlayableGames {
   // Hex below is the result of `WorldResourceIdLib.encode({ namespace: "", name: "PlayableGames", typeId: RESOURCE_TABLE });`
   ResourceId constant _tableId = ResourceId.wrap(0x74620000000000000000000000000000506c617961626c6547616d6573000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0020010020000000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0040020020200000000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of (address, uint256, address)
   Schema constant _keySchema = Schema.wrap(0x00480300611f6100000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint256)
-  Schema constant _valueSchema = Schema.wrap(0x002001001f000000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint256, uint256)
+  Schema constant _valueSchema = Schema.wrap(0x004002001f1f0000000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -44,8 +49,9 @@ library PlayableGames {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](1);
+    fieldNames = new string[](2);
     fieldNames[0] = "times";
+    fieldNames[1] = "ticket";
   }
 
   /**
@@ -89,32 +95,6 @@ library PlayableGames {
   }
 
   /**
-   * @notice Get times.
-   */
-  function get(address tokenAddr, uint256 tokenId, address buyer) internal view returns (uint256 times) {
-    bytes32[] memory _keyTuple = new bytes32[](3);
-    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
-    _keyTuple[1] = bytes32(uint256(tokenId));
-    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
-
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (uint256(bytes32(_blob)));
-  }
-
-  /**
-   * @notice Get times.
-   */
-  function _get(address tokenAddr, uint256 tokenId, address buyer) internal view returns (uint256 times) {
-    bytes32[] memory _keyTuple = new bytes32[](3);
-    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
-    _keyTuple[1] = bytes32(uint256(tokenId));
-    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
-
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (uint256(bytes32(_blob)));
-  }
-
-  /**
    * @notice Set times.
    */
   function setTimes(address tokenAddr, uint256 tokenId, address buyer, uint256 times) internal {
@@ -139,27 +119,186 @@ library PlayableGames {
   }
 
   /**
-   * @notice Set times.
+   * @notice Get ticket.
    */
-  function set(address tokenAddr, uint256 tokenId, address buyer, uint256 times) internal {
+  function getTicket(address tokenAddr, uint256 tokenId, address buyer) internal view returns (uint256 ticket) {
     bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
     _keyTuple[1] = bytes32(uint256(tokenId));
     _keyTuple[2] = bytes32(uint256(uint160(buyer)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((times)), _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    return (uint256(bytes32(_blob)));
   }
 
   /**
-   * @notice Set times.
+   * @notice Get ticket.
    */
-  function _set(address tokenAddr, uint256 tokenId, address buyer, uint256 times) internal {
+  function _getTicket(address tokenAddr, uint256 tokenId, address buyer) internal view returns (uint256 ticket) {
     bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
     _keyTuple[1] = bytes32(uint256(tokenId));
     _keyTuple[2] = bytes32(uint256(uint160(buyer)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((times)), _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Set ticket.
+   */
+  function setTicket(address tokenAddr, uint256 tokenId, address buyer, uint256 ticket) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((ticket)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set ticket.
+   */
+  function _setTicket(address tokenAddr, uint256 tokenId, address buyer, uint256 ticket) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((ticket)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get the full data.
+   */
+  function get(
+    address tokenAddr,
+    uint256 tokenId,
+    address buyer
+  ) internal view returns (PlayableGamesData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreSwitch.getRecord(
+      _tableId,
+      _keyTuple,
+      _fieldLayout
+    );
+    return decode(_staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Get the full data.
+   */
+  function _get(
+    address tokenAddr,
+    uint256 tokenId,
+    address buyer
+  ) internal view returns (PlayableGamesData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreCore.getRecord(
+      _tableId,
+      _keyTuple,
+      _fieldLayout
+    );
+    return decode(_staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Set the full data using individual values.
+   */
+  function set(address tokenAddr, uint256 tokenId, address buyer, uint256 times, uint256 ticket) internal {
+    bytes memory _staticData = encodeStatic(times, ticket);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Set the full data using individual values.
+   */
+  function _set(address tokenAddr, uint256 tokenId, address buyer, uint256 times, uint256 ticket) internal {
+    bytes memory _staticData = encodeStatic(times, ticket);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
+  }
+
+  /**
+   * @notice Set the full data using the data struct.
+   */
+  function set(address tokenAddr, uint256 tokenId, address buyer, PlayableGamesData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.times, _table.ticket);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
+  }
+
+  /**
+   * @notice Set the full data using the data struct.
+   */
+  function _set(address tokenAddr, uint256 tokenId, address buyer, PlayableGamesData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.times, _table.ticket);
+
+    EncodedLengths _encodedLengths;
+    bytes memory _dynamicData;
+
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(buyer)));
+
+    StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
+  }
+
+  /**
+   * @notice Decode the tightly packed blob of static data using this table's field layout.
+   */
+  function decodeStatic(bytes memory _blob) internal pure returns (uint256 times, uint256 ticket) {
+    times = (uint256(Bytes.getBytes32(_blob, 0)));
+
+    ticket = (uint256(Bytes.getBytes32(_blob, 32)));
+  }
+
+  /**
+   * @notice Decode the tightly packed blobs using this table's field layout.
+   * @param _staticData Tightly packed static fields.
+   *
+   *
+   */
+  function decode(
+    bytes memory _staticData,
+    EncodedLengths,
+    bytes memory
+  ) internal pure returns (PlayableGamesData memory _table) {
+    (_table.times, _table.ticket) = decodeStatic(_staticData);
   }
 
   /**
@@ -190,8 +329,8 @@ library PlayableGames {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint256 times) internal pure returns (bytes memory) {
-    return abi.encodePacked(times);
+  function encodeStatic(uint256 times, uint256 ticket) internal pure returns (bytes memory) {
+    return abi.encodePacked(times, ticket);
   }
 
   /**
@@ -200,8 +339,8 @@ library PlayableGames {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dynamic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(uint256 times) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(times);
+  function encode(uint256 times, uint256 ticket) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
+    bytes memory _staticData = encodeStatic(times, ticket);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;

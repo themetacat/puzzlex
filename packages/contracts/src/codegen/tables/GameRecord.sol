@@ -19,6 +19,8 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 struct GameRecordData {
   uint256 playTimes;
   uint256 successTimes;
+  uint256 successPlayer;
+  uint256 pool;
 }
 
 library GameRecord {
@@ -26,12 +28,12 @@ library GameRecord {
   ResourceId constant _tableId = ResourceId.wrap(0x7462000000000000000000000000000047616d655265636f7264000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0040020020200000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0080040020202020000000000000000000000000000000000000000000000000);
 
   // Hex-encoded key schema of (address, uint256, uint256)
   Schema constant _keySchema = Schema.wrap(0x00540300611f1f00000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint256, uint256)
-  Schema constant _valueSchema = Schema.wrap(0x004002001f1f0000000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint256, uint256, uint256, uint256)
+  Schema constant _valueSchema = Schema.wrap(0x008004001f1f1f1f000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -49,9 +51,11 @@ library GameRecord {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](2);
+    fieldNames = new string[](4);
     fieldNames[0] = "playTimes";
     fieldNames[1] = "successTimes";
+    fieldNames[2] = "successPlayer";
+    fieldNames[3] = "pool";
   }
 
   /**
@@ -177,6 +181,114 @@ library GameRecord {
   }
 
   /**
+   * @notice Get successPlayer.
+   */
+  function getSuccessPlayer(
+    address tokenAddr,
+    uint256 tokenId,
+    uint256 round
+  ) internal view returns (uint256 successPlayer) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Get successPlayer.
+   */
+  function _getSuccessPlayer(
+    address tokenAddr,
+    uint256 tokenId,
+    uint256 round
+  ) internal view returns (uint256 successPlayer) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Set successPlayer.
+   */
+  function setSuccessPlayer(address tokenAddr, uint256 tokenId, uint256 round, uint256 successPlayer) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((successPlayer)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set successPlayer.
+   */
+  function _setSuccessPlayer(address tokenAddr, uint256 tokenId, uint256 round, uint256 successPlayer) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((successPlayer)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get pool.
+   */
+  function getPool(address tokenAddr, uint256 tokenId, uint256 round) internal view returns (uint256 pool) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Get pool.
+   */
+  function _getPool(address tokenAddr, uint256 tokenId, uint256 round) internal view returns (uint256 pool) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Set pool.
+   */
+  function setPool(address tokenAddr, uint256 tokenId, uint256 round, uint256 pool) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((pool)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set pool.
+   */
+  function _setPool(address tokenAddr, uint256 tokenId, uint256 round, uint256 pool) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(round));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((pool)), _fieldLayout);
+  }
+
+  /**
    * @notice Get the full data.
    */
   function get(address tokenAddr, uint256 tokenId, uint256 round) internal view returns (GameRecordData memory _table) {
@@ -217,8 +329,16 @@ library GameRecord {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(address tokenAddr, uint256 tokenId, uint256 round, uint256 playTimes, uint256 successTimes) internal {
-    bytes memory _staticData = encodeStatic(playTimes, successTimes);
+  function set(
+    address tokenAddr,
+    uint256 tokenId,
+    uint256 round,
+    uint256 playTimes,
+    uint256 successTimes,
+    uint256 successPlayer,
+    uint256 pool
+  ) internal {
+    bytes memory _staticData = encodeStatic(playTimes, successTimes, successPlayer, pool);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -234,8 +354,16 @@ library GameRecord {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(address tokenAddr, uint256 tokenId, uint256 round, uint256 playTimes, uint256 successTimes) internal {
-    bytes memory _staticData = encodeStatic(playTimes, successTimes);
+  function _set(
+    address tokenAddr,
+    uint256 tokenId,
+    uint256 round,
+    uint256 playTimes,
+    uint256 successTimes,
+    uint256 successPlayer,
+    uint256 pool
+  ) internal {
+    bytes memory _staticData = encodeStatic(playTimes, successTimes, successPlayer, pool);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -252,7 +380,7 @@ library GameRecord {
    * @notice Set the full data using the data struct.
    */
   function set(address tokenAddr, uint256 tokenId, uint256 round, GameRecordData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.playTimes, _table.successTimes);
+    bytes memory _staticData = encodeStatic(_table.playTimes, _table.successTimes, _table.successPlayer, _table.pool);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -269,7 +397,7 @@ library GameRecord {
    * @notice Set the full data using the data struct.
    */
   function _set(address tokenAddr, uint256 tokenId, uint256 round, GameRecordData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.playTimes, _table.successTimes);
+    bytes memory _staticData = encodeStatic(_table.playTimes, _table.successTimes, _table.successPlayer, _table.pool);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;
@@ -285,10 +413,16 @@ library GameRecord {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (uint256 playTimes, uint256 successTimes) {
+  function decodeStatic(
+    bytes memory _blob
+  ) internal pure returns (uint256 playTimes, uint256 successTimes, uint256 successPlayer, uint256 pool) {
     playTimes = (uint256(Bytes.getBytes32(_blob, 0)));
 
     successTimes = (uint256(Bytes.getBytes32(_blob, 32)));
+
+    successPlayer = (uint256(Bytes.getBytes32(_blob, 64)));
+
+    pool = (uint256(Bytes.getBytes32(_blob, 96)));
   }
 
   /**
@@ -302,7 +436,7 @@ library GameRecord {
     EncodedLengths,
     bytes memory
   ) internal pure returns (GameRecordData memory _table) {
-    (_table.playTimes, _table.successTimes) = decodeStatic(_staticData);
+    (_table.playTimes, _table.successTimes, _table.successPlayer, _table.pool) = decodeStatic(_staticData);
   }
 
   /**
@@ -333,8 +467,13 @@ library GameRecord {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint256 playTimes, uint256 successTimes) internal pure returns (bytes memory) {
-    return abi.encodePacked(playTimes, successTimes);
+  function encodeStatic(
+    uint256 playTimes,
+    uint256 successTimes,
+    uint256 successPlayer,
+    uint256 pool
+  ) internal pure returns (bytes memory) {
+    return abi.encodePacked(playTimes, successTimes, successPlayer, pool);
   }
 
   /**
@@ -345,9 +484,11 @@ library GameRecord {
    */
   function encode(
     uint256 playTimes,
-    uint256 successTimes
+    uint256 successTimes,
+    uint256 successPlayer,
+    uint256 pool
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(playTimes, successTimes);
+    bytes memory _staticData = encodeStatic(playTimes, successTimes, successPlayer, pool);
 
     EncodedLengths _encodedLengths;
     bytes memory _dynamicData;

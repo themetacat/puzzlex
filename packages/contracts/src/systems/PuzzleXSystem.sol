@@ -2,11 +2,11 @@
 pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { Puzzle, PuzzleData, PlayableGames, NFTSettings, NFTSettingsData, GameRecord, PlayerGameRecord, PlayerGameRecordData, GameRound } from "../codegen/index.sol";
+import { Puzzle, PuzzleData, PlayableGames, PlayableGamesData, NFTSettings, NFTSettingsData, GameRecord, GameRecordData, PlayerGameRecord, PlayerGameRecordData, GameRound, RankRecord, RankRecordData } from "../codegen/index.sol";
 import { SystemSwitch } from "@latticexyz/world-modules/src/utils/SystemSwitch.sol";
 import { IWorld } from "../codegen/world/IWorld.sol";
 import { Random } from "../libraries/Random.sol";
-import { CheckStatus } from "../libraries/CheckStatus.sol";
+import { Check } from "../libraries/Check.sol";
 import { NFTInfo } from "../libraries/Struct.sol";
 import { AccessRequire } from "../libraries/AccessRequire.sol";
 import { ERC721System } from "@latticexyz/world-modules/src/modules/erc721-puppet/ERC721System.sol";
@@ -18,8 +18,8 @@ contract PuzzleXSystem is System {
     address tokenAddr = nftInfo.tokenAddr;
     uint256 tokenId = nftInfo.tokenId;
 
-    uint256 playableGames = PlayableGames.get(tokenAddr, tokenId, owner);
-    require(playableGames > 0, "No play times");
+    PlayableGamesData memory playableGamesData = PlayableGames.get(tokenAddr, tokenId, owner);
+    require(playableGamesData.times > 0, "No play times");
 
     uint256 gamePieces = NFTSettings.getPieces(tokenAddr, tokenId);
 
@@ -27,10 +27,19 @@ contract PuzzleXSystem is System {
     uint256 round = GameRound.getRound(tokenAddr, tokenId);
 
     PlayerGameRecordData memory playerGameRecordData = PlayerGameRecord.get(tokenAddr, tokenId, owner, round);
+    GameRecordData memory gameRecordData = GameRecord.get(tokenAddr, tokenId, round);
 
     Puzzle.set(tokenAddr, tokenId, owner, block.timestamp, round, false, shuffleArray);
-    PlayableGames.set(tokenAddr, tokenId, owner, playableGames - 1);
-    GameRecord.setPlayTimes(tokenAddr, tokenId, round, GameRecord.getPlayTimes(tokenAddr, tokenId, round) + 1);
+    PlayableGames.setTimes(tokenAddr, tokenId, owner, playableGamesData.times - 1);
+    GameRecord.set(
+      tokenAddr,
+      tokenId,
+      round,
+      gameRecordData.playTimes + 1,
+      gameRecordData.successTimes,
+      gameRecordData.successPlayer,
+      gameRecordData.pool + playableGamesData.ticket
+    );
     PlayerGameRecord.set(
       tokenAddr,
       tokenId,
@@ -45,6 +54,7 @@ contract PuzzleXSystem is System {
   }
 
   function move(NFTInfo memory nftInfo, uint256[] memory indexX, uint256[] memory indexY) public {
+    // !!!check arr value continuous
     address owner = _msgSender();
     address tokenAddr = nftInfo.tokenAddr;
     uint256 tokenId = nftInfo.tokenId;
@@ -69,11 +79,11 @@ contract PuzzleXSystem is System {
 
       Puzzle.setPicSeq(tokenAddr, tokenId, owner, picSeq);
 
-      bool gameSuccess = CheckStatus.checkGameSuccess(picSeq);
+      bool gameSuccess = Check.checkGameSuccess(picSeq);
+      _updatePlayerRecord(nftInfo, gameSuccess);
       if (gameSuccess) {
         Puzzle.setGameFinished(tokenAddr, tokenId, owner, gameSuccess);
       }
-      _updatePlayerRecord(nftInfo, gameSuccess);
     }
   }
 
@@ -84,9 +94,10 @@ contract PuzzleXSystem is System {
     uint256 round = Puzzle.getRound(tokenAddr, tokenId, player);
 
     PlayerGameRecordData memory playerGameRecordData = PlayerGameRecord.get(tokenAddr, tokenId, player, round);
+    uint256 minSteps = playerGameRecordData.minStep;
+    uint256 newSteps = playerGameRecordData.step + 1;
+    uint256 totalSteps = playerGameRecordData.totalStep + 1;
     if (gameSuccess) {
-      uint256 minSteps = playerGameRecordData.minStep;
-      uint256 newSteps = playerGameRecordData.step + 1;
       if (minSteps == 0 || newSteps < minSteps) {
         PlayerGameRecord.set(
           tokenAddr,
@@ -94,11 +105,20 @@ contract PuzzleXSystem is System {
           player,
           round,
           newSteps,
-          playerGameRecordData.totalStep + 1,
+          totalSteps,
           newSteps,
           playerGameRecordData.playTimes,
           playerGameRecordData.successTimes + 1
         );
+        if (minSteps == 0) {
+          GameRecord.setSuccessPlayer(
+            tokenAddr,
+            tokenId,
+            round,
+            GameRecord.getSuccessPlayer(tokenAddr, tokenId, round) + 1
+          );
+        }
+        _updateRankRecord(nftInfo);
       } else {
         PlayerGameRecord.set(
           tokenAddr,
@@ -106,7 +126,7 @@ contract PuzzleXSystem is System {
           player,
           round,
           newSteps,
-          playerGameRecordData.totalStep + 1,
+          totalSteps,
           minSteps,
           playerGameRecordData.playTimes,
           playerGameRecordData.successTimes + 1
@@ -119,12 +139,78 @@ contract PuzzleXSystem is System {
         tokenId,
         player,
         round,
-        playerGameRecordData.step + 1,
-        playerGameRecordData.totalStep + 1,
-        playerGameRecordData.minStep,
+        newSteps,
+        totalSteps,
+        minSteps,
         playerGameRecordData.playTimes,
         playerGameRecordData.successTimes
       );
     }
+  }
+
+  function _updateRankRecord(NFTInfo memory nftInfo) private {
+    address tokenAddr = nftInfo.tokenAddr;
+    uint256 tokenId = nftInfo.tokenId;
+    address player = _msgSender();
+
+    uint256 gameRound = GameRound.getRound(tokenAddr, tokenId);
+
+    RankRecordData memory rankRecordData = RankRecord.get(tokenAddr, tokenId, gameRound);
+    address[] memory rankPlayersArr = rankRecordData.players;
+    uint256[] memory rankStepsArr = rankRecordData.steps;
+
+    int256 userIndex = Check.findUserIndex(rankPlayersArr, player);
+    uint256 minSteps = PlayerGameRecord.getMinStep(tokenAddr, tokenId, player, gameRound);
+
+    if (userIndex == -1) {
+      (rankPlayersArr, rankStepsArr) = newInsPlayerStepsArr(rankPlayersArr, rankStepsArr, minSteps, player);
+    } else {
+      (rankPlayersArr, rankStepsArr) = newChangePlayerStepsArr(
+        rankPlayersArr,
+        rankStepsArr,
+        minSteps,
+        uint256(userIndex)
+      );
+    }
+    RankRecord.set(tokenAddr, tokenId, gameRound, rankPlayersArr, rankStepsArr);
+  }
+
+  function newInsPlayerStepsArr(
+    address[] memory rankPlayersArr,
+    uint256[] memory rankStepsArr,
+    uint256 minSteps,
+    address player
+  ) internal pure returns (address[] memory, uint256[] memory) {
+    address[] memory newRankPlayersArr = new address[](rankPlayersArr.length + 1);
+    uint256[] memory newRankStepsArr = new uint256[](rankStepsArr.length + 1);
+    uint256 insertIndex = Check.binarySearch(rankStepsArr, minSteps);
+    for (uint256 i = 0; i < insertIndex; i++) {
+      newRankPlayersArr[i] = rankPlayersArr[i];
+      newRankStepsArr[i] = rankStepsArr[i];
+    }
+
+    newRankPlayersArr[insertIndex] = player;
+    newRankStepsArr[insertIndex] = minSteps;
+
+    for (uint256 i = insertIndex; i < rankPlayersArr.length; i++) {
+      newRankPlayersArr[i + 1] = rankPlayersArr[i];
+      newRankStepsArr[i + 1] = rankStepsArr[i];
+    }
+    return (newRankPlayersArr, newRankStepsArr);
+  }
+
+  function newChangePlayerStepsArr(
+    address[] memory rankPlayersArr,
+    uint256[] memory rankStepsArr,
+    uint256 minSteps,
+    uint256 index
+  ) internal pure returns (address[] memory, uint256[] memory) {
+    rankStepsArr[index] = minSteps;
+    while (index > 0 && rankStepsArr[index] < rankStepsArr[index - 1]) {
+      (rankPlayersArr[index], rankPlayersArr[index - 1]) = (rankPlayersArr[index - 1], rankPlayersArr[index]);
+      (rankStepsArr[index], rankStepsArr[index - 1]) = (rankStepsArr[index - 1], rankStepsArr[index]);
+      index--;
+    }
+    return (rankPlayersArr, rankStepsArr);
   }
 }

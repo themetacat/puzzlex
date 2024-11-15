@@ -6,10 +6,12 @@ pragma solidity >=0.8.24;
 import { NFTInfo } from "../../libraries/Struct.sol";
 
 /**
- * @title IPurchaseSystem
+ * @title IPuzzleXNFTSettingSystem
  * @author MUD (https://mud.dev) by Lattice (https://lattice.xyz)
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
-interface IPurchaseSystem {
-  function purchaseGame(NFTInfo memory nftInfo) external payable;
+interface IPuzzleXNFTSettingSystem {
+  function setup(NFTInfo memory nftInfo, uint256 ticket, uint256 numOfGames, uint256 preRound, uint256 pieces) external;
+
+  function startRound(NFTInfo memory nftInfo) external;
 }

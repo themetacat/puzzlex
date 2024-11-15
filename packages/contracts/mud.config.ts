@@ -32,7 +32,8 @@ export default defineWorld({
         tokenAddr: "address",
         tokenId: "uint256",
         buyer: "address",
-        times: "uint256"
+        times: "uint256",
+        ticket: "uint256"
       },
       key: ["tokenAddr", "tokenId", "buyer"],
     },
@@ -63,6 +64,8 @@ export default defineWorld({
         round: "uint256",
         playTimes: "uint256",
         successTimes: "uint256",
+        successPlayer: "uint256",
+        pool: "uint256"
       },
       key: ["tokenAddr", "tokenId", "round"],
     },
@@ -79,6 +82,43 @@ export default defineWorld({
         successTimes: "uint256",
       },
       key: ["tokenAddr", "tokenId", "player", "round"],
+    },
+    PlayerClaim: {
+      schema: {
+        player: "address",
+        tokenAddr: "address",
+        tokenId: "uint256",
+        round: "uint256",
+        claimed: "bool"
+      },
+      key: ["tokenAddr", "tokenId", "player", "round"],
+    },
+    // !!! single NFT or all NFT
+    PlayerWithdrawn: {
+      schema: {
+        player: "address",
+        tokenAddr: "address",
+        tokenId: "uint256",
+        amount: "uint256"
+      },
+      key: ["tokenAddr", "tokenId", "player"],
+    },
+    RankRecord: {
+      schema: {
+        tokenAddr: "address",
+        tokenId: "uint256",
+        round: "uint256",
+        players: "address[]",
+        steps: "uint256[]",
+      },
+      key: ["tokenAddr", "tokenId", "round"],
+    },
+    TotalSupply: {
+      schema: {
+        tokenAddr: "address",
+        totalSupply: "uint256"
+      },
+      key: ["tokenAddr"],
     }
   },
   modules: [

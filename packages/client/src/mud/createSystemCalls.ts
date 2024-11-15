@@ -35,7 +35,7 @@ export function createSystemCalls(
    *   syncToRecs
    *   (https://github.com/latticexyz/mud/blob/main/templates/react/packages/client/src/mud/setupNetwork.ts#L77-L83).
    */
-  { worldContract, waitForTransaction, publicClient }: SetupNetworkResult,
+  { worldContract, waitForTransaction, publicClient, walletClient }: SetupNetworkResult,
   { Puzzle }: ClientComponents,
 ) {
   const addressToEntityID = (address: Hex) =>
@@ -44,7 +44,7 @@ export function createSystemCalls(
   const setup = async () => {
 
     try {
-      const tx = await worldContract.write.setup([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}, parseEther('0.004'), 2n, 300n, 2n]);
+      const tx = await worldContract.write.setup([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}, parseEther('2'), 2n, 600n, 2n]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -60,7 +60,7 @@ export function createSystemCalls(
   const purchase = async () => {
     
     try {
-      const tx = await worldContract.write.purchase([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1}],{value: parseEther("0.004")});
+      const tx = await worldContract.write.purchaseGame([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}],{value: parseEther("2")});
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -92,7 +92,7 @@ export function createSystemCalls(
   const move = async () => {
     
     try {
-      const tx = await worldContract.write.move([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n},[1n],[3n]]);
+      const tx = await worldContract.write.move([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n},[0n,0n,0n],[1n,3n,2n]]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -121,11 +121,55 @@ export function createSystemCalls(
     return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
   }
 
+  const createNFT = async () => {
+    
+    try {
+      const tx = await worldContract.write.mintNFT([1]);
+      const res = await publicClient.waitForTransactionReceipt({ hash: tx });
+      console.log(res);
+      
+      await waitForTransaction(tx)
+
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+
+  const getBonus = async () => {
+    
+    try {
+      const tx = await worldContract.read.getBonusSingle([{"nftInfo": {"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n},"round": [1n], "player": walletClient.account.address}, false]);
+      console.log(tx);
+      
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+  
+  const claimBonusSingle = async () => {
+    try {
+      const tx = await worldContract.write.claimBonusSingle([{"nftInfo": {"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n},"round": [1n], "player": walletClient.account.address}]);
+      console.log(tx);
+      await waitForTransaction(tx)
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+
   return {
     setup,
     purchase,
     createGame,
     move,
-    startRound
+    startRound,
+    createNFT,
+    getBonus,
+    claimBonusSingle
   };
 }
