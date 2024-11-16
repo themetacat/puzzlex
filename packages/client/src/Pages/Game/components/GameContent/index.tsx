@@ -1,61 +1,81 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import GameItem from '../GameItem';
 import { v4 } from "uuid";
 import $style from './index.module.scss';
 
-function getRandomColor() {
-    // 生成随机的 R、G、B 分量
-    var r = Math.floor(Math.random() * 256);
-    var g = Math.floor(Math.random() * 256);
-    var b = Math.floor(Math.random() * 256);
+function shuffleIndexes(length: number) {
+    // 创建一个包含 0 到 length-1 的有序索引数组
+    const indexes = Array.from({ length: length }, (_, index) => index);
 
-    // 拼接成 RGB 颜色格式
-    var randomColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+    // 打乱索引数组
+    for (let i = indexes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
+    }
 
-    return randomColor;
+    return indexes;
 }
+
+import GameBg from '@/assets/game/game.png';
 
 const GameContent = (props: any) => {
     const { rows } = props;
-    const [switchArr, setSwitchArr] = useState([]) as any;
-    const games = useMemo(() => {
-        const arr = [];
-        for (let i = 0; i < rows ** 2; i++) {
-            arr.push(
-                {
-                    bg: getRandomColor(),
-                    id: i,
-                    key: v4()
-                }
-            );
-        }
-        return arr;
-    }, [rows]);
-
     const [gameList, setGameList] = useState([]) as any;
+    const [activeIndex, setActiveIndex] = useState([]) as any;
+    const gameWrapperRef = useRef() as any;
 
-    useEffect(() => {
-        setGameList(games);
-    }, games);
+    const games = useMemo(() => {
+        const randomArr = shuffleIndexes(rows ** 2);
+        return randomArr.map(item => {
+            return {
+                originalIndex: item,
+                key: v4()
+            }
+        });
+    }, [rows]);
 
     const itemSize = useMemo(() => {
         const size = 742 / rows;
         return size;
     }, [rows]);
 
-    const handleClick = (index: number) => {
-        if (!switchArr.length) {
-            setSwitchArr([index]);
+    // const connectGameList = useMemo(() => {
+    //     const res = [];
+    //     for (let i = 0; i < gameList.length; i++) {
+    //         // 同一行
+    //         if (gameList[i + 1]?.originalIndex - gameList[i]?.originalIndex === 1 && (Math.floor(i / rows) === Math.floor((i + 1) / rows))) {
+    //             res.push([gameList[i], gameList[i + 1]])
+    //         }
+    //         // 同一列
+    //         else if (gameList[i + rows]?.originalIndex - gameList[i].originalIndex === rows)
+    //             res.push([gameList[i], gameList[i + 5]])
+    //     }
+
+    //     return res;
+
+    // }, [gameList, rows]);
+
+    // useEffect(() => {
+    //     console.log('connectGameList=====>>>>>', connectGameList);
+    // }, [connectGameList]);
+
+
+    useEffect(() => {
+        setGameList(games)
+    }, [games]);
+
+    const onGameItemClick = (index: number) => {
+        if (activeIndex.length === 0) {
+            setActiveIndex([index]);
         }
-        else if (index === switchArr[0]) {
-            setSwitchArr([]);
-        }
-        else if (index !== switchArr[0]) {
-            const newArr = switchArrayItems([...gameList], switchArr[0], index) as any;
+        else if (activeIndex.length === 1) {
+            setActiveIndex([...activeIndex, index]);
+            const newArr = switchArrayItems([...gameList], activeIndex[0], index) as any;
             setGameList(newArr);
+
             setTimeout(() => {
-                setSwitchArr([]);
-            })
+                setActiveIndex([])
+            });
         }
     };
 
@@ -70,23 +90,26 @@ const GameContent = (props: any) => {
     }
 
     useEffect(() => {
-        console.log(gameList, '===');
+        console.log(gameList, '====');
     }, [gameList]);
 
     return (
-        <div className={$style['game-wrapper']}>
+        <div className={$style['game-wrapper']} ref={gameWrapperRef}>
             {
-                gameList.map((item: any, index: number) => (
-                    <GameItem
-                        key={item.key}
-                        data={item}
-                        index={index}
-                        rows={rows}
-                        itemSize={itemSize}
-                        activeIndex={switchArr[0] !== undefined ? switchArr[0] : ''}
-                        onClick={() => handleClick(index)}
-                    />
-                ))
+                gameList?.map((item: any, index: number) => {
+                    return (
+                        <GameItem
+                            item={item}
+                            index={index}
+                            key={item.key}
+                            activeIndex={activeIndex}
+                            itemSize={itemSize}
+                            rows={rows}
+                            itemClick={() => onGameItemClick(index)}
+                            bg={GameBg}
+                        />
+                    )
+                })
             }
         </div>
     )

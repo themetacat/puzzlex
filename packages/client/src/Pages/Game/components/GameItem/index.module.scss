@@ -1,10 +1,55 @@
+
 .game-item {
     position: absolute;
-    z-index: 1;
     transition: all .2s ease;
 }
 
 .active {
-    z-index: 100 !important;
-    transform: scale(1.05);
+    &::after {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 1px dashed #F6F6F6;
+        box-sizing: border-box;
+    }
+}
+
+.success-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: rgba(0, 0, 0, .4);
+}
+
+.game-click .success-icon {
+    animation: none;
+}
+
+.success-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42px;
+    height: 42px;
+    transform: translate(-50%, -50%);
+    background-image: url('@/assets/game/check.png');
+    background-size: cover;
+    z-index: 2;
+    // animation: fadeOut 0.5s forwards;
+    // animation-delay: 1s; /* 在 3 秒后开始执行动画 */
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }

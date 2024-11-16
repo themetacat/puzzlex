@@ -1,47 +1,68 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, memo } from 'react';
 import $style from './index.module.scss';
 
-const GameItem = (props: any) => {
-    const {index, data, rows, itemSize, onClick, activeIndex} = props;
-    const [posiObj, setPosi] = useState({
-        left: 0,
-        top: 0
-    });
-    const [zIndex, setZindex] = useState(0);
-    const getPosition = (index: number) => {
-        const rowIndex = Math.floor(index / rows);
-        const colIndex = index % rows;
+const GameContent = (props: any) => {
+    const { rows, item, index, activeIndex, itemSize, bg, itemClick } = props;
+    const gameRef = useRef() as any;
+
+    const onGameItemClick = () => {
+        if (item.originalIndex === index) {
+            gameRef.current.classList.add($style['game-click']);
+            setTimeout(() => {
+                gameRef.current.classList.remove($style['game-click']);
+            }, 2000);
+            return;
+        }
+        itemClick();
+    };
+
+    const itemStyle = useMemo(() => {
+        const x = Math.floor(item.originalIndex / rows);
+        const y = item.originalIndex % rows;
+
+        const top = Math.floor(index / rows);
+        const left = index % rows;
+
         return {
-            top: rowIndex * itemSize,
-            left: colIndex * itemSize
-        };
-    };
+            background: `url(${bg}) -${y * itemSize}px -${x * itemSize}px`,
+            backgroundSize: '742px 742px',
+            backgroundPosition: `-${y * itemSize}px -${x * itemSize}px`,
+            top: top * itemSize + 'px',
+            left: left * itemSize + 'px',
+            width: itemSize + 'px',
+            height: itemSize + 'px',
+        }
+    }, [index, item, itemSize, bg]);
 
-    const handleClick = () => {
-        setZindex(10);
-        setTimeout(() => {
-            setZindex(0);
-        }, 200);
-        onClick();
-    };
+    const successDom = useMemo(() => {
+        return (
+            item.originalIndex === index && (
+                <>
+                    <div className={$style['success-mask']}></div>
+                    <div className={$style['success-icon']}></div>
+                </>
+            )
+        )
+    }, [item, index]);
 
-    useEffect(() => {
-        setPosi(getPosition(index));
-    }, [index]);
     return (
         <div
-            className={`${$style['game-item']} ${activeIndex === index ? $style['active'] : ''}`}
-            onClick={handleClick}
+            ref={gameRef}
+            onClick={() => onGameItemClick()}
+            className={`
+                ${$style['game-item']}
+                ${activeIndex[0] === index ? $style['active'] : ''}                
+            `}
+            key={item.key}
             style={{
-                background: data.bg,
-                width: itemSize + 'px',
-                height: itemSize + 'px',
-                left: posiObj.left + 'px',
-                top: posiObj.top + 'px',
-                zIndex: zIndex
+                ...itemStyle
             }}
-        />
+        >
+            {successDom}
+        </div>
     )
 };
 
-export default GameItem;
+
+
+export default memo(GameContent);
