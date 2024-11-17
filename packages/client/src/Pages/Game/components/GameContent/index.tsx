@@ -3,35 +3,25 @@ import GameItem from '../GameItem';
 import { v4 } from "uuid";
 import $style from './index.module.scss';
 
-function shuffleIndexes(length: number) {
-    // 创建一个包含 0 到 length-1 的有序索引数组
-    const indexes = Array.from({ length: length }, (_, index) => index);
-
-    // 打乱索引数组
-    for (let i = indexes.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
-    }
-
-    return indexes;
-}
-
 import GameBg from '@/assets/game/game.png';
 
+// 1. 组件被传入经过打乱的数组 defultGames 给组件内的数据源gameList
+// 2. gameItem组件经过循环渲染gameList
+// 3. 
+
 const GameContent = (props: any) => {
-    const { rows } = props;
+    const { rows, list } = props;
     const [gameList, setGameList] = useState([]) as any;
     const [activeIndex, setActiveIndex] = useState([]) as any;
 
-    const games = useMemo(() => {
-        const randomArr = shuffleIndexes(rows ** 2);
-        return randomArr.map(item => {
+    const defultGames = useMemo(() => {
+        return list.map((item: any) => {
             return {
                 originalIndex: item,
                 key: v4()
             }
         });
-    }, [rows]);
+    }, [rows, list]);
 
     const itemSize = useMemo(() => {
         const size = 742 / rows;
@@ -39,8 +29,8 @@ const GameContent = (props: any) => {
     }, [rows]);
 
     useEffect(() => {
-        setGameList(games)
-    }, [games]);
+        setGameList(defultGames)
+    }, [defultGames]);
 
     const onGameItemClick = (index: number) => {
         if (activeIndex.length === 0) {

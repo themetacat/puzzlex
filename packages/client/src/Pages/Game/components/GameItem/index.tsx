@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, memo } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import $style from './index.module.scss';
 
 const GameContent = (props: any) => {
