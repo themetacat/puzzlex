@@ -57,11 +57,77 @@ const GameContent = (props: any) => {
         setGameList(newGameList);
     };
 
-    const getConnectBlock = () => {
+    const getConnectBlock = (shuffledArray: any, rows: number) => {
+        // 塞到一个二维数组中
+        function getTwoDimArray(shuffledArray: any, rows: any) {
+            const twoDimArray = [];
+            for (let i = 0; i < rows; i++) {
+                twoDimArray.push(shuffledArray.slice(i * rows, (i + 1) * rows));
+            }
+            return twoDimArray;
+        };
 
+        function getConnectBlock(twoDimArray: any, rows: any) {
+            // const connectedArrays = [];
+            const contentBlock: any = {
+                lineBlock: [],
+                colBlock: []
+            };
+            const connect = [];
+
+            for (let i = 0; i < twoDimArray.length; i++) {
+                let connectedSequence = [];
+                let connectSeq = [];
+                for (let j = 0; j < twoDimArray[i].length; j++) {
+                    if (j + 1 < twoDimArray[i].length && twoDimArray[i][j].originalIndex + 1 === twoDimArray[i][j + 1].originalIndex && twoDimArray[i][j].originalIndex !== (i*rows + j)) {
+                        connectedSequence.push(twoDimArray[i][j]);
+                        connectSeq.push({ row: i, col: j });
+                    } else {
+                        if (connectedSequence.length > 0) {
+                            connectedSequence.push(twoDimArray[i][j]); // Add the last element to the sequence
+                            connectSeq.push({ row: i, col: j })
+                            contentBlock.lineBlock.push(connectedSequence.slice()); // Add the connected sequence to the result
+                            connect.push(connectSeq.slice());
+                            connectedSequence = []; // Reset the connected sequence
+                            connectSeq = [];
+                        }
+                    }
+                }
+            }
+
+            // 垂直方向
+            for (let j = 0; j < twoDimArray[0].length; j++) {
+                let connectedSequence = [];
+                let connectSeq = [];
+                for (let i = 0; i < twoDimArray.length; i++) {
+                    if (i + 1 < twoDimArray.length && twoDimArray[i][j].originalIndex + rows === twoDimArray[i + 1][j].originalIndex && twoDimArray[i][j].originalIndex !== (i*rows + j)) {
+                        connectedSequence.push(twoDimArray[i][j]);
+                        connectSeq.push({ row: i, col: j });
+                    } else {
+                        if (connectedSequence.length > 0) {
+                            connectedSequence.push(twoDimArray[i][j]);
+                            connectSeq.push({ row: i, col: j })
+                            contentBlock.colBlock.push(connectedSequence.slice());
+                            connect.push(connectSeq.slice());
+                            connectedSequence = [];
+                            connectSeq = [];
+                        }
+                    }
+                }
+            }
+
+            return { contentBlock, connect };
+        };
+
+        const twoDimArray = getTwoDimArray(shuffledArray, rows);
+        const res = getConnectBlock(twoDimArray, rows)
+        return res;
     };
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        const res = getConnectBlock(gameList, rows);
+        console.log(res.contentBlock, 'xxxx');
+    }, [gameList, rows]);
 
     return (
         <div className={$style['game-wrapper']}>
