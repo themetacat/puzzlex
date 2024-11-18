@@ -110,6 +110,9 @@ importers:
       style-loader:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.96.1(esbuild@0.17.19))
+      uuid:
+        specifier: ^11.0.3
+        version: 11.0.3
       viem:
         specifier: 2.21.19
         version: 2.21.19(bufferutil@4.0.8)(typescript@5.4.2)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -158,11 +161,11 @@ importers:
         specifier: ^18.15.11
         version: 18.19.62
       ds-test:
-        specifier: https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0
+        specifier: https://github.com/dapphub/ds-test.git
         version: https://codeload.github.com/dapphub/ds-test/tar.gz/e282159d5170298eb2455a6c05280ab5a73a4ef0
       forge-std:
-        specifier: https://github.com/foundry-rs/forge-std.git#74cfb77e308dd188d2f58864aaf44963ae6b88b1
-        version: https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1
+        specifier: https://github.com/foundry-rs/forge-std.git
+        version: https://codeload.github.com/foundry-rs/forge-std/tar.gz/0e7097750918380d84dd3cfdef595bee74dabb70
       prettier:
         specifier: 3.2.5
         version: 3.2.5
@@ -4601,9 +4604,9 @@ packages:
     resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==, tarball: https://registry.npmmirror.com/foreground-child/-/foreground-child-3.3.0.tgz}
     engines: {node: '>=14'}
 
-  forge-std@https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1:
-    resolution: {tarball: https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1}
-    version: 1.6.0
+  forge-std@https://codeload.github.com/foundry-rs/forge-std/tar.gz/0e7097750918380d84dd3cfdef595bee74dabb70:
+    resolution: {tarball: https://codeload.github.com/foundry-rs/forge-std/tar.gz/0e7097750918380d84dd3cfdef595bee74dabb70}
+    version: 1.9.4
 
   fresh@0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==, tarball: https://registry.npmmirror.com/fresh/-/fresh-0.5.2.tgz}
@@ -7237,6 +7240,10 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==, tarball: https://registry.npmmirror.com/utils-merge/-/utils-merge-1.0.1.tgz}
     engines: {node: '>= 0.4.0'}
+
+  uuid@11.0.3:
+    resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==, tarball: https://registry.npmmirror.com/uuid/-/uuid-11.0.3.tgz}
+    hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==, tarball: https://registry.npmmirror.com/uuid/-/uuid-8.3.2.tgz}
@@ -13667,7 +13674,7 @@ snapshots:
       cross-spawn: 7.0.3
       signal-exit: 4.1.0
 
-  forge-std@https://codeload.github.com/foundry-rs/forge-std/tar.gz/74cfb77e308dd188d2f58864aaf44963ae6b88b1: {}
+  forge-std@https://codeload.github.com/foundry-rs/forge-std/tar.gz/0e7097750918380d84dd3cfdef595bee74dabb70: {}
 
   fresh@0.5.2: {}
 
@@ -16572,6 +16579,8 @@ snapshots:
       which-typed-array: 1.1.15
 
   utils-merge@1.0.1: {}
+
+  uuid@11.0.3: {}
 
   uuid@8.3.2: {}
 

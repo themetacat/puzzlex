@@ -25,7 +25,7 @@ const GameContent = (props: any) => {
 
         return {
             background: `url(${bg}) -${y * itemSize}px -${x * itemSize}px`,
-            backgroundSize: '742px 742px',
+            backgroundSize: `${itemSize * rows}px ${itemSize * rows}px`,
             backgroundPosition: `-${y * itemSize}px -${x * itemSize}px`,
             top: top * itemSize + 'px',
             left: left * itemSize + 'px',

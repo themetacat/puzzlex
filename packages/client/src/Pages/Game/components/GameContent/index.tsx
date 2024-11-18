@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, memo } from 'react';
+import { useEffect, useMemo, useState, memo, useRef } from 'react';
 import GameItem from '../GameItem';
 import { v4 } from "uuid";
 import $style from './index.module.scss';
@@ -13,6 +13,7 @@ const GameContent = (props: any) => {
     const { rows, list } = props;
     const [gameList, setGameList] = useState([]) as any;
     const [activeIndex, setActiveIndex] = useState(undefined) as any;
+    const gameWrapper = useRef() as any;
 
     const defultGames = useMemo(() => {
         return list.map((item: any) => {
@@ -24,9 +25,12 @@ const GameContent = (props: any) => {
     }, [rows, list]);
 
     const itemSize = useMemo(() => {
-        const size = 742 / rows;
-        return size;
-    }, [rows]);
+        const width = gameWrapper?.current?.offsetWidth;
+        if (gameWrapper?.current?.offsetWidth) {
+            return width / rows;
+        }
+        return 0;
+    }, [rows, gameWrapper.current]);
 
     useEffect(() => {
         setGameList(defultGames)
@@ -130,7 +134,7 @@ const GameContent = (props: any) => {
     }, [gameList, rows]);
 
     return (
-        <div className={$style['game-wrapper']}>
+        <div className={$style['game-wrapper']} ref={gameWrapper}>
             {
                 gameList?.map((item: any, index: number) => {
                     return (
