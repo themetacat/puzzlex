@@ -44,7 +44,7 @@ const EditImageModal = (props: any) => {
                     preview={'.' + $style['modal-footer-left']}
                     viewMode={1}
                     guides={true}
-                    initialAspectRatio={1}
+                    aspectRatio={1}
                     minCropBoxHeight={10}
                     minCropBoxWidth={10}
                     background={true}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState, memo } from 'react';
 import GameItem from '../GameItem';
 import { v4 } from "uuid";
 import $style from './index.module.scss';
@@ -12,7 +12,7 @@ import GameBg from '@/assets/game/game.png';
 const GameContent = (props: any) => {
     const { rows, list } = props;
     const [gameList, setGameList] = useState([]) as any;
-    const [activeIndex, setActiveIndex] = useState([]) as any;
+    const [activeIndex, setActiveIndex] = useState(undefined) as any;
 
     const defultGames = useMemo(() => {
         return list.map((item: any) => {
@@ -33,29 +33,35 @@ const GameContent = (props: any) => {
     }, [defultGames]);
 
     const onGameItemClick = (index: number) => {
-        if (activeIndex.length === 0) {
-            setActiveIndex([index]);
+        if (typeof activeIndex === 'undefined') {
+            setActiveIndex(index);
         }
-        else if (activeIndex.length === 1) {
-            setActiveIndex([...activeIndex, index]);
-            const newArr = switchArrayItems([...gameList], activeIndex[0], index) as any;
-            setGameList(newArr);
-
-            setTimeout(() => {
-                setActiveIndex([])
-            });
+        else if (activeIndex === index) {
+            setActiveIndex(undefined);
+        }
+        else {
+            // 开始互换
+            onSwitch([activeIndex], [index]);
+            setActiveIndex(undefined);
         }
     };
 
-    const switchArrayItems = (arr: any[], index1: number, index2: number) => {
-        // 检查索引是否有效
-        if (index1 < 0 || index1 >= arr.length || index2 < 0 || index2 >= arr.length) {
-            return "Invalid index";
+    // 互换两个元素列表
+    const onSwitch = (arr1: number[], arr2: number[]) => {
+        if (arr1.length !== arr2.length) return;
+
+        const newGameList = [...gameList];
+        for (let i = 0; i < arr1.length; i++) {
+            [newGameList[arr1[i]], newGameList[arr2[i]]] = [newGameList[arr2[i]], newGameList[arr1[i]]];
         }
-        // 交换数组中的两个元素
-        [arr[index1], arr[index2]] = [arr[index2], arr[index1]];
-        return arr;
-    }
+        setGameList(newGameList);
+    };
+
+    const getConnectBlock = () => {
+
+    };
+
+    useEffect(() => {}, []);
 
     return (
         <div className={$style['game-wrapper']}>
@@ -64,13 +70,13 @@ const GameContent = (props: any) => {
                     return (
                         <GameItem
                             item={item}
-                            index={index}
+                            currentIndex={index}
                             key={item.key}
-                            activeIndex={activeIndex}
+                            isActive={activeIndex === index}
                             itemSize={itemSize}
                             rows={rows}
-                            itemClick={() => onGameItemClick(index)}
                             bg={GameBg}
+                            itemClick={() => onGameItemClick(index)}
                         />
                     )
                 })
@@ -81,4 +87,4 @@ const GameContent = (props: any) => {
 
 
 
-export default GameContent;
+export default memo(GameContent);

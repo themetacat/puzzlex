@@ -1,12 +1,12 @@
-import { useMemo, useRef, memo } from 'react';
+import { useMemo, useRef, memo, useState, useEffect } from 'react';
 import $style from './index.module.scss';
 
 const GameContent = (props: any) => {
-    const { rows, item, index, activeIndex, itemSize, bg, itemClick } = props;
+    const { rows, item, currentIndex, isActive, itemSize, bg, itemClick } = props;
     const gameRef = useRef() as any;
-
+    const [isShowdSuccess, setShowdSuccess] = useState(false);
     const onGameItemClick = () => {
-        if (item.originalIndex === index) {
+        if (item.originalIndex === currentIndex) {
             gameRef.current.classList.add($style['game-click']);
             setTimeout(() => {
                 gameRef.current.classList.remove($style['game-click']);
@@ -20,8 +20,8 @@ const GameContent = (props: any) => {
         const x = Math.floor(item.originalIndex / rows);
         const y = item.originalIndex % rows;
 
-        const top = Math.floor(index / rows);
-        const left = index % rows;
+        const top = Math.floor(currentIndex / rows);
+        const left = currentIndex % rows;
 
         return {
             background: `url(${bg}) -${y * itemSize}px -${x * itemSize}px`,
@@ -32,18 +32,18 @@ const GameContent = (props: any) => {
             width: itemSize + 'px',
             height: itemSize + 'px',
         }
-    }, [index, item, itemSize, bg]);
+    }, [currentIndex, item, itemSize, bg]);
 
     const successDom = useMemo(() => {
         return (
-            item.originalIndex === index && (
+            item.originalIndex === currentIndex && (
                 <>
                     <div className={$style['success-mask']}></div>
                     <div className={$style['success-icon']}></div>
                 </>
             )
         )
-    }, [item, index]);
+    }, [item, currentIndex]);
 
     return (
         <div
@@ -51,7 +51,7 @@ const GameContent = (props: any) => {
             onClick={() => onGameItemClick()}
             className={`
                 ${$style['game-item']}
-                ${activeIndex[0] === index ? $style['active'] : ''}                
+                ${isActive ? $style['active'] : ''}                
             `}
             key={item.key}
             style={{
