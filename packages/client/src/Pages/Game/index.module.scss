@@ -1,7 +1,9 @@
+$size: min(766px, 68vh);
+
 .game {
     position: relative;
-    padding: 57px 0 100px;
-    min-height: calc(100vh - 80px);
+    padding: 50px 0 35px;
+    min-height: calc(100vh - 60px);
     width: 100%;
     background-color: transparent;
     box-sizing: border-box;
@@ -21,6 +23,7 @@
     &-main {
         display: flex;
         flex-wrap: wrap;
+        justify-content: space-between;
 
         &-left {
             max-width: 275px;
@@ -122,7 +125,6 @@
             align-items: flex-end;
             justify-content: flex-end;
             z-index: 1;
-            flex: 1;
 
             .right-btn {
                 display: flex;
@@ -149,8 +151,8 @@
             justify-content: center;
             position: relative;
             z-index: 1;
-            width: 766px;
-            height: 766px;
+            width: $size;
+            height: $size;
             background-image: url('@/assets/game/game-border.png');
             background-size: cover;
 

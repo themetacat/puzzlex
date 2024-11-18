@@ -1,6 +1,6 @@
 .header {
     position: relative;
-    height: 80px;
+    height: 60px;
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -34,9 +34,10 @@
 
         &-text {
             color: #000;
-            font-family: Poppins;
+            font-family: Protest Strike;
+            color: #1C86F0;
             font-weight: 500;
-            font-size: 20px;
+            font-size: 18px;
         }
     }
 
@@ -50,7 +51,7 @@
 
         &-item {
             font-family: Poppins;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 500;
             line-height: 30px;
             text-align: center;
@@ -71,8 +72,8 @@
         gap: 50px;
 
         &-item {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
             transition: transform 0.3s ease;
 
@@ -101,11 +102,11 @@
         flex-shrink: 0;
         margin-left: 50px;
         font-family: Poppins;
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 700;
         text-align: center;
-        width: 148px;
-        height: 50px;
+        width: 138px;
+        height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;

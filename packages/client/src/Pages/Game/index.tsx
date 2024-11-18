@@ -1,14 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GameContent from './components/GameContent';
 import GameoverModal from './components/GameoverModal';
 import SuccessModal from './components/SuccessModal';
 import GameRoundModal from './components/GameRoundModal';
 import $style from './index.module.scss';
 
+function shuffleIndexes(length: number) {
+    // 创建一个包含 0 到 length-1 的有序索引数组
+    const indexes = Array.from({ length: length }, (_, index) => index);
+
+    // 打乱索引数组
+    for (let i = indexes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
+    }
+
+    return indexes;
+}
+
 const Game = () => {
     const [isShowGameoverModal, setShowgameoverModal] = useState(false);
     const [isShowSuccessModal, setShowSuccessModal] = useState(false);
     const [isShowRoundModal, setShowRoundModal] = useState(false);
+    const [list, setList] = useState([]) as any;
+    const rows = 4;
 
     const onCloseSuccessModal = () => {
         setShowSuccessModal(false);
@@ -21,6 +36,11 @@ const Game = () => {
     const onCloseRoundModal = () => {
         setShowRoundModal(false);
     };
+
+    useEffect(() => {
+        const arr = shuffleIndexes(rows ** 2);
+        setList(arr);
+    }, []);
 
     return (
         <div className={$style['game']}>
@@ -48,7 +68,7 @@ const Game = () => {
                 <div className={$style['game-main-content']}>
                     <div className={$style['content-bg1']}></div>
                     <div className={$style['content-bg2']}></div>
-                    <GameContent rows={4} />
+                    <GameContent rows={rows} list={list} />
                 </div>
                 <div className={$style['game-main-right']}>
                     <div className={$style['right-btn']}>New Game</div>
