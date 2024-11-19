@@ -1,10 +1,11 @@
-
 .game-item {
     position: absolute;
     transition: all .2s ease;
+    box-sizing: border-box;
 }
 
 .active {
+    border: none !important;
     &::after {
         position: absolute;
         content: '';
@@ -49,6 +50,7 @@
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }

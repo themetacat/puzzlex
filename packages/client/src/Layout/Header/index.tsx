@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useMatch } from 'react-router-dom';
 import { Dropdown } from 'antd';
+import {
+    useConnectModal
+} from '@rainbow-me/rainbowkit';
+import { useAccount, useDisconnect } from 'wagmi';
+
 
 import $style from './index.module.scss';
 
 const Header = () => {
+    const { openConnectModal } = useConnectModal();
+    const {disconnect} = useDisconnect();
     const history = useNavigate();
     const [isGamePage, setIsGamePage] = useState(false);
-    const [isLogin, setLogin] = useState(false);
     const [selectedKeys, setSelectKeys] = useState([] as any);
 
     const onNavigate = (path: string) => {
@@ -41,12 +47,11 @@ const Header = () => {
         {
             key: 'disconnect',
             label: <div>Disconnect</div>,
-            onClick: () => {}
+            onClick: () => {disconnect()}
         }
     ];
-
-    const onConnect = () => { };
     const onClickIcon = (path: string) => { };
+    const { address, isConnected } = useAccount();
 
     return (
         <div className={`${$style.header} ${isGamePage && $style['game']}`}>
@@ -73,15 +78,15 @@ const Header = () => {
                 ></div>
             </div>
             {
-                !isLogin ?
-                    <div className={$style['header-connect']} onClick={onConnect}>Connect</div>
+                !isConnected ?
+                    <div className={$style['header-connect']} onClick={openConnectModal}>Connect</div>
                     :
                     <Dropdown
-                        menu={{items: walletMenu, selectedKeys: selectedKeys}}
+                        menu={{ items: walletMenu, selectedKeys: selectedKeys }}
                         trigger={['click']}
                         overlayClassName={$style['header-dropdown']}
                     >
-                        <div className={$style['header-wallet']}>sssss</div>
+                        <div className={$style['header-wallet']}>{address?.substring(0, 4) + '...' + address?.substring(address?.length - 4)}</div>
                     </Dropdown>
             }
         </div>
