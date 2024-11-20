@@ -5,7 +5,7 @@ import { singletonEntity } from "@latticexyz/store-sync/recs";
 export const App = () => {
   const {
     components: { Puzzle },
-    systemCalls: { setup, purchase, createGame, move, startRound, createNFT, getBonus, claimBonusSingle },
+    systemCalls: { setup, purchase, createGame, move, startRound, mintNFT, setOwner, getBonus, claimBonusSingle },
   } = useMUD();
 
   const counter = useComponentValue(Puzzle, singletonEntity);
@@ -15,79 +15,100 @@ export const App = () => {
       {/* <div>
         Counter: <span>{counter?.value ?? "??"}</span>
       </div> */}
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await setup());
-        }}
-      >
-        setup
-      </button>
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await startRound());
-        }}
-      >
-        startRound
-      </button>
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await purchase());
-        }}
-      >
-        buy
-      </button>
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await createGame());
-        }}
-      >
-        create
-      </button>
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await move());
-        }}
-      >
-        move
-      </button>
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await createNFT());
-        }}
-      >
-        createNFT
-      </button>
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await getBonus());
-        }}
-      >
-        getBonus
-      </button>
-      
-      <button
-        type="button"
-        onClick={async (event) => {
-          event.preventDefault();
-          console.log("new counter value:", await claimBonusSingle());
-        }}
-      >
-        claimBonusSingle
-      </button>
+      <div>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await setup());
+          }}
+        >
+          setup
+        </button>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await startRound());
+          }}
+        >
+          startRound
+        </button>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await purchase());
+          }}
+        >
+          buy
+        </button>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await createGame());
+          }}
+        >
+          create
+        </button>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await move());
+          }}
+        >
+          move
+        </button>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await mintNFT());
+          }}
+        >
+          mintNFT
+        </button>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await setOwner());
+          }}
+        >
+          setOwner
+        </button>
+      </div>
+
+      <div>
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await getBonus());
+          }}
+        >
+          getBonus
+        </button>
+
+        <button
+          type="button"
+          onClick={async (event) => {
+            event.preventDefault();
+            console.log("new counter value:", await claimBonusSingle());
+          }}
+        >
+          claimBonusSingle
+        </button>
+      </div>
+
     </>
   );
 };

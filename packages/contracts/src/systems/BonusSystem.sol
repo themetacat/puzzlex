@@ -74,7 +74,7 @@ contract BonusSystem is System, IWorldErrors {
    */
   function claimBonusSingle(BonusSingle memory bonusSingle) public {
     address player = bonusSingle.player;
-    require(_msgSender() == bonusSingle.player, "Not owner");
+    require(_msgSender() == player, "Not owner");
     require(!Check.hasSameElements(bonusSingle.round), "Same Round");
 
     uint256 unclaimedBonus = getBonusSingle(bonusSingle, true);

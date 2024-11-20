@@ -6,13 +6,17 @@ import { NFTInfo } from "./Struct.sol";
 import { Puzzle, NFTSettings, NFTSettingsData, GameRound, GameRoundData } from "../codegen/index.sol";
 
 library AccessRequire {
-  function requireNFTOwner(NFTInfo memory nftInfo, address msgSender) internal view returns(bool) {
-    address tokenAddr = nftInfo.tokenAddr;
-    uint256 tokenId = nftInfo.tokenId;
-    IERC721Mintable erc721 = IERC721Mintable(tokenAddr);
-    // require(msgSender == erc721.ownerOf(tokenId), "Not owner");
-    return msgSender == erc721.ownerOf(tokenId);
-  }
+  // function requireNFTOwner(NFTInfo memory nftInfo, address msgSender) internal view returns(bool) {
+  //   address tokenAddr = nftInfo.tokenAddr;
+  //   uint256 tokenId = nftInfo.tokenId;
+  //   IERC721Mintable erc721 = IERC721Mintable(tokenAddr);
+  //   // require(msgSender == erc721.ownerOf(tokenId), "Not owner");
+  //   return (msgSender == erc721.ownerOf(tokenId));
+  // }
+  function isNFTOwner(NFTInfo memory nftInfo, address user) internal view returns (bool) {
+    IERC721Mintable erc721 = IERC721Mintable(nftInfo.tokenAddr);
+    return user == erc721.ownerOf(nftInfo.tokenId);
+}
 
   function roundInProgress(NFTInfo memory nftInfo) internal view returns (bool) {
     address tokenAddr = nftInfo.tokenAddr;

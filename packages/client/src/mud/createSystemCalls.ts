@@ -44,7 +44,7 @@ export function createSystemCalls(
   const setup = async () => {
 
     try {
-      const tx = await worldContract.write.setup([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}, parseEther('2'), 2n, 600n, 2n]);
+      const tx = await worldContract.write.setup([{"tokenAddr": "0x2FF827f8750dbe1A7dbAD0f7354d0D0395551d2F", "tokenId": 1n}, parseEther('2'), 2n, 600n, 2n]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -60,7 +60,7 @@ export function createSystemCalls(
   const purchase = async () => {
     
     try {
-      const tx = await worldContract.write.purchaseGame([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}],{value: parseEther("2")});
+      const tx = await worldContract.write.purchaseGame([{"tokenAddr": "0x2FF827f8750dbe1A7dbAD0f7354d0D0395551d2F", "tokenId": 1n}],{value: parseEther("2")});
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -76,7 +76,7 @@ export function createSystemCalls(
   const createGame = async () => {
     
     try {
-      const tx = await worldContract.write.createGame([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}]);
+      const tx = await worldContract.write.createGame([{"tokenAddr": "0x2FF827f8750dbe1A7dbAD0f7354d0D0395551d2F", "tokenId": 1n}]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -92,7 +92,7 @@ export function createSystemCalls(
   const move = async () => {
     
     try {
-      const tx = await worldContract.write.move([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n},[0n,0n,0n],[1n,3n,2n]]);
+      const tx = await worldContract.write.move([{"tokenAddr": "0x2FF827f8750dbe1A7dbAD0f7354d0D0395551d2F", "tokenId": 1n},[0n,0n,0n],[1n,3n,2n]]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -108,7 +108,7 @@ export function createSystemCalls(
   const startRound = async () => {
     
     try {
-      const tx = await worldContract.write.startRound([{"tokenAddr": "0x60EA96f57B3a5715A90DAe1440a78f8bb339C92e", "tokenId": 1n}]);
+      const tx = await worldContract.write.startRound([{"tokenAddr": "0x2FF827f8750dbe1A7dbAD0f7354d0D0395551d2F", "tokenId": 1n}]);
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -121,10 +121,10 @@ export function createSystemCalls(
     return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
   }
 
-  const createNFT = async () => {
+  const mintNFT = async () => {
     
     try {
-      const tx = await worldContract.write.mintNFT([1]);
+      const tx = await worldContract.write.mintNFT(["test", walletClient.account.address, parseEther('2'), 2n, 600n, 2n],{value: parseEther("0.03")});
       const res = await publicClient.waitForTransactionReceipt({ hash: tx });
       console.log(res);
       
@@ -136,6 +136,23 @@ export function createSystemCalls(
     
     return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
   }
+
+  const setOwner = async () => {
+    
+    try {
+      const tx = await worldContract.write.setOwner(["0x8d8b6b8414e1e3dcfd4168561b9be6bd3bf6ec4b"]);
+      const res = await publicClient.waitForTransactionReceipt({ hash: tx });
+      console.log(res);
+      
+      await waitForTransaction(tx)
+
+    } catch (error) {
+      console.log(error);
+    }
+    
+    return getComponentValue(Puzzle, addressToEntityID("0xeA8C71E9A0B1c217A6DAa37fBEb777a203087a37"));
+  }
+
 
   const getBonus = async () => {
     
@@ -168,7 +185,8 @@ export function createSystemCalls(
     createGame,
     move,
     startRound,
-    createNFT,
+    mintNFT,
+    setOwner,
     getBonus,
     claimBonusSingle
   };

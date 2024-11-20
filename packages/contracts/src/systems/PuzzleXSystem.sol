@@ -2,7 +2,7 @@
 pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { Puzzle, PuzzleData, PlayableGames, PlayableGamesData, NFTSettings, NFTSettingsData, GameRecord, GameRecordData, PlayerGameRecord, PlayerGameRecordData, GameRound, RankRecord, RankRecordData } from "../codegen/index.sol";
+import { Puzzle, PuzzleData, PlayableGames, PlayableGamesData, NFTSettings, NFTSettingsData, GameRecord, GameRecordData, PlayerGameRecord, PlayerGameRecordData, GameRound, RankRecord, RankRecordData, GameActivityTimes } from "../codegen/index.sol";
 import { SystemSwitch } from "@latticexyz/world-modules/src/utils/SystemSwitch.sol";
 import { IWorld } from "../codegen/world/IWorld.sol";
 import { Random } from "../libraries/Random.sol";
@@ -31,13 +31,14 @@ contract PuzzleXSystem is System {
 
     Puzzle.set(tokenAddr, tokenId, owner, block.timestamp, round, false, shuffleArray);
     PlayableGames.setTimes(tokenAddr, tokenId, owner, playableGamesData.times - 1);
+    _updateGameActivityInfo(nftInfo, round, playerGameRecordData.playTimes + 1);
     GameRecord.set(
       tokenAddr,
       tokenId,
       round,
       gameRecordData.playTimes + 1,
       gameRecordData.successTimes,
-      gameRecordData.successPlayer,
+      gameRecordData.successPlayer, //!!! 0
       gameRecordData.pool + playableGamesData.ticket
     );
     PlayerGameRecord.set(
@@ -212,5 +213,17 @@ contract PuzzleXSystem is System {
       index--;
     }
     return (rankPlayersArr, rankStepsArr);
+  }
+
+  function _updateGameActivityInfo(NFTInfo memory nftInfo, uint256 round, uint256 times) private {
+    address tokenAddr = nftInfo.tokenAddr;
+    uint256 tokenId = nftInfo.tokenId;
+    // uint256 setTimes;
+    uint256 activityTimes = GameActivityTimes.getTimes(tokenAddr, tokenId, round);
+    if (times == 3) {
+      GameActivityTimes.set(nftInfo.tokenAddr, nftInfo.tokenId, round, activityTimes + times);
+    } else if (times > 3) {
+      GameActivityTimes.set(nftInfo.tokenAddr, nftInfo.tokenId, round, activityTimes + 1);
+    }
   }
 }

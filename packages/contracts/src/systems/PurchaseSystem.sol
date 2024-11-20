@@ -2,14 +2,16 @@
 pragma solidity >=0.8.24;
 
 import { System } from "@latticexyz/world/src/System.sol";
-import { NFTSettings, NFTSettingsData, PlayableGames, PlayableGamesData } from "../codegen/index.sol";
+import { NFTSettings, NFTSettingsData, PlayableGames, PlayableGamesData, TotalSupply } from "../codegen/index.sol";
 import { NFTInfo } from "../libraries/Struct.sol";
-
 
 contract PurchaseSystem is System {
   function purchaseGame(NFTInfo memory nftInfo) public payable {
+
     address tokenAddr = nftInfo.tokenAddr;
     uint256 tokenId = nftInfo.tokenId;
+    uint256 totalSupply = TotalSupply.get(tokenAddr);
+    require(totalSupply >= tokenId, "No such NFT");
 
     NFTSettingsData memory settingData = NFTSettings.get(tokenAddr, tokenId);
     uint256 ticket = settingData.ticket;

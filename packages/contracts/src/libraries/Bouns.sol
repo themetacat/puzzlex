@@ -3,7 +3,7 @@ pragma solidity >=0.8.24;
 
 import { IERC721Mintable } from "@latticexyz/world-modules/src/modules/erc721-puppet/IERC721Mintable.sol";
 import { NFTInfo } from "./Struct.sol";
-import { GameRecord, GameRecordData, RankRecord, RankRecordData } from "../codegen/index.sol";
+import { GameRecord, GameRecordData, RankRecord, RankRecordData, GameActivityTimes, PlayerGameRecord } from "../codegen/index.sol";
 import { Check } from "./Check.sol";
 import { FiRST_TIER_COUNT } from "./Constant.sol";
 import { AccessRequire } from "./AccessRequire.sol";
@@ -17,6 +17,7 @@ library Bouns {
     uint256 successPlayer = gameRecordData.successPlayer;
 
     RankRecordData memory rankRecordData = RankRecord.get(tokenAddr, tokenId, round);
+
     int256 userIndex = Check.findUserIndex(rankRecordData.players, player);
     if (userIndex < 0) {
       return 0;
@@ -28,10 +29,28 @@ library Bouns {
       return 0;
     }
     uint256 bouns = getTierToBouns(gameRecordData.pool, successPlayer, tier, index);
-    if(AccessRequire.requireNFTOwner(nftInfo, player)){
-        bouns += getOwnerBonus(gameRecordData.pool);
+    if (AccessRequire.isNFTOwner(nftInfo, player)) {
+      // creator
+      bouns += getOwnerBonus(gameRecordData.pool);
     }
+    // activity user
+    bouns += getBonusActivity(nftInfo, round, player, gameRecordData.pool);
     return bouns;
+  }
+
+  function getBonusActivity(
+    NFTInfo memory nftInfo,
+    uint256 round,
+    address player,
+    uint256 pool
+  ) internal view returns (uint256 res) {
+    address tokenAddr = nftInfo.tokenAddr;
+    uint256 tokenId = nftInfo.tokenId;
+    uint256 gameRoundTimes = GameActivityTimes.get(tokenAddr, tokenId, round);
+    uint256 playerTimes = PlayerGameRecord.getPlayTimes(tokenAddr, tokenId, player, round);
+    if (gameRoundTimes > 0 && playerTimes > 0) {
+      res = (((pool * 10) / 100) * playerTimes) / gameRoundTimes;
+    }
   }
 
   function _round(uint256 _value) internal pure returns (uint256) {
@@ -95,7 +114,7 @@ library Bouns {
     }
   }
 
-  function getOwnerBonus(uint256 pool) pure internal returns(uint256){
-    return (15*pool)/100;
+  function getOwnerBonus(uint256 pool) internal pure returns (uint256) {
+    return (15 * pool) / 100;
   }
 }

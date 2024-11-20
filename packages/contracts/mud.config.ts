@@ -83,6 +83,15 @@ export default defineWorld({
       },
       key: ["tokenAddr", "tokenId", "player", "round"],
     },
+    GameActivityTimes: {
+      schema: {
+        tokenAddr: "address",
+        tokenId: "uint256",
+        round: "uint256",
+        times: "uint256",
+      },
+      key: ["tokenAddr", "tokenId", "round"],
+    },
     PlayerClaim: {
       schema: {
         player: "address",
@@ -119,14 +128,28 @@ export default defineWorld({
         totalSupply: "uint256"
       },
       key: ["tokenAddr"],
-    }
-  },
-  modules: [
-    {
-      artifactPath: "@latticexyz/world-modules/out/PuppetModule.sol/PuppetModule.json",
-      root: false,
-      args: [],
     },
+    NFTData: {
+      schema: {
+        tokenAddr: "address",
+        tokenId: "uint256",
+        name: "bytes32"
+      },
+      key: ["tokenAddr", "tokenId"],
+    },
+  },
+  // systems: {
+  //   PuzzleXNFTSettingSystem: {
+  //     name: "settingSystem",
+  //     openAccess: false
+  //   }
+  // },
+  modules: [
+    // {
+    //   artifactPath: "@latticexyz/world-modules/out/PuppetModule.sol/PuppetModule.json",
+    //   root: false,
+    //   args: [],
+    // },
     {
       artifactPath: "@latticexyz/world-modules/out/ERC721Module.sol/ERC721Module.json",
       root: false,
