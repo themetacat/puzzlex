@@ -18,6 +18,7 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
 struct PuzzleData {
   uint256 startTime;
+  uint256 round;
   bool gameFinished;
   uint256[] picSeq;
 }
@@ -27,20 +28,22 @@ library Puzzle {
   ResourceId constant _tableId = ResourceId.wrap(0x7462000000000000000000000000000050757a7a6c6500000000000000000000);
 
   FieldLayout constant _fieldLayout =
-    FieldLayout.wrap(0x0021020120010000000000000000000000000000000000000000000000000000);
+    FieldLayout.wrap(0x0041030120200100000000000000000000000000000000000000000000000000);
 
-  // Hex-encoded key schema of (address)
-  Schema constant _keySchema = Schema.wrap(0x0014010061000000000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint256, bool, uint256[])
-  Schema constant _valueSchema = Schema.wrap(0x002102011f608100000000000000000000000000000000000000000000000000);
+  // Hex-encoded key schema of (address, uint256, address)
+  Schema constant _keySchema = Schema.wrap(0x00480300611f6100000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint256, uint256, bool, uint256[])
+  Schema constant _valueSchema = Schema.wrap(0x004103011f1f6081000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
    * @return keyNames An array of strings with the names of key fields.
    */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
-    keyNames = new string[](1);
-    keyNames[0] = "owner";
+    keyNames = new string[](3);
+    keyNames[0] = "tokenAddr";
+    keyNames[1] = "tokenId";
+    keyNames[2] = "owner";
   }
 
   /**
@@ -48,10 +51,11 @@ library Puzzle {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](3);
+    fieldNames = new string[](4);
     fieldNames[0] = "startTime";
-    fieldNames[1] = "gameFinished";
-    fieldNames[2] = "picSeq";
+    fieldNames[1] = "round";
+    fieldNames[2] = "gameFinished";
+    fieldNames[3] = "picSeq";
   }
 
   /**
@@ -71,9 +75,11 @@ library Puzzle {
   /**
    * @notice Get startTime.
    */
-  function getStartTime(address owner) internal view returns (uint256 startTime) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function getStartTime(address tokenAddr, uint256 tokenId, address owner) internal view returns (uint256 startTime) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint256(bytes32(_blob)));
@@ -82,9 +88,11 @@ library Puzzle {
   /**
    * @notice Get startTime.
    */
-  function _getStartTime(address owner) internal view returns (uint256 startTime) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _getStartTime(address tokenAddr, uint256 tokenId, address owner) internal view returns (uint256 startTime) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
     return (uint256(bytes32(_blob)));
@@ -93,9 +101,11 @@ library Puzzle {
   /**
    * @notice Set startTime.
    */
-  function setStartTime(address owner, uint256 startTime) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function setStartTime(address tokenAddr, uint256 tokenId, address owner, uint256 startTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((startTime)), _fieldLayout);
   }
@@ -103,61 +113,135 @@ library Puzzle {
   /**
    * @notice Set startTime.
    */
-  function _setStartTime(address owner, uint256 startTime) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _setStartTime(address tokenAddr, uint256 tokenId, address owner, uint256 startTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((startTime)), _fieldLayout);
   }
 
   /**
-   * @notice Get gameFinished.
+   * @notice Get round.
    */
-  function getGameFinished(address owner) internal view returns (bool gameFinished) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function getRound(address tokenAddr, uint256 tokenId, address owner) internal view returns (uint256 round) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Get round.
+   */
+  function _getRound(address tokenAddr, uint256 tokenId, address owner) internal view returns (uint256 round) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Set round.
+   */
+  function setRound(address tokenAddr, uint256 tokenId, address owner, uint256 round) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((round)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set round.
+   */
+  function _setRound(address tokenAddr, uint256 tokenId, address owner, uint256 round) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((round)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get gameFinished.
+   */
+  function getGameFinished(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner
+  ) internal view returns (bool gameFinished) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
    * @notice Get gameFinished.
    */
-  function _getGameFinished(address owner) internal view returns (bool gameFinished) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _getGameFinished(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner
+  ) internal view returns (bool gameFinished) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
    * @notice Set gameFinished.
    */
-  function setGameFinished(address owner, bool gameFinished) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function setGameFinished(address tokenAddr, uint256 tokenId, address owner, bool gameFinished) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((gameFinished)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((gameFinished)), _fieldLayout);
   }
 
   /**
    * @notice Set gameFinished.
    */
-  function _setGameFinished(address owner, bool gameFinished) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _setGameFinished(address tokenAddr, uint256 tokenId, address owner, bool gameFinished) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((gameFinished)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((gameFinished)), _fieldLayout);
   }
 
   /**
    * @notice Get picSeq.
    */
-  function getPicSeq(address owner) internal view returns (uint256[] memory picSeq) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function getPicSeq(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner
+  ) internal view returns (uint256[] memory picSeq) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 0);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint256());
@@ -166,9 +250,15 @@ library Puzzle {
   /**
    * @notice Get picSeq.
    */
-  function _getPicSeq(address owner) internal view returns (uint256[] memory picSeq) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _getPicSeq(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner
+  ) internal view returns (uint256[] memory picSeq) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 0);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint256());
@@ -177,9 +267,11 @@ library Puzzle {
   /**
    * @notice Set picSeq.
    */
-  function setPicSeq(address owner, uint256[] memory picSeq) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function setPicSeq(address tokenAddr, uint256 tokenId, address owner, uint256[] memory picSeq) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((picSeq)));
   }
@@ -187,9 +279,11 @@ library Puzzle {
   /**
    * @notice Set picSeq.
    */
-  function _setPicSeq(address owner, uint256[] memory picSeq) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _setPicSeq(address tokenAddr, uint256 tokenId, address owner, uint256[] memory picSeq) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((picSeq)));
   }
@@ -197,9 +291,11 @@ library Puzzle {
   /**
    * @notice Get the length of picSeq.
    */
-  function lengthPicSeq(address owner) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function lengthPicSeq(address tokenAddr, uint256 tokenId, address owner) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -210,9 +306,11 @@ library Puzzle {
   /**
    * @notice Get the length of picSeq.
    */
-  function _lengthPicSeq(address owner) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _lengthPicSeq(address tokenAddr, uint256 tokenId, address owner) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -224,9 +322,16 @@ library Puzzle {
    * @notice Get an item of picSeq.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function getItemPicSeq(address owner, uint256 _index) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function getItemPicSeq(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner,
+    uint256 _index
+  ) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     unchecked {
       bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 32, (_index + 1) * 32);
@@ -238,9 +343,16 @@ library Puzzle {
    * @notice Get an item of picSeq.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function _getItemPicSeq(address owner, uint256 _index) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _getItemPicSeq(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner,
+    uint256 _index
+  ) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     unchecked {
       bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 32, (_index + 1) * 32);
@@ -251,9 +363,11 @@ library Puzzle {
   /**
    * @notice Push an element to picSeq.
    */
-  function pushPicSeq(address owner, uint256 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function pushPicSeq(address tokenAddr, uint256 tokenId, address owner, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
   }
@@ -261,9 +375,11 @@ library Puzzle {
   /**
    * @notice Push an element to picSeq.
    */
-  function _pushPicSeq(address owner, uint256 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _pushPicSeq(address tokenAddr, uint256 tokenId, address owner, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
   }
@@ -271,9 +387,11 @@ library Puzzle {
   /**
    * @notice Pop an element from picSeq.
    */
-  function popPicSeq(address owner) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function popPicSeq(address tokenAddr, uint256 tokenId, address owner) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 0, 32);
   }
@@ -281,9 +399,11 @@ library Puzzle {
   /**
    * @notice Pop an element from picSeq.
    */
-  function _popPicSeq(address owner) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _popPicSeq(address tokenAddr, uint256 tokenId, address owner) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.popFromDynamicField(_tableId, _keyTuple, 0, 32);
   }
@@ -291,9 +411,11 @@ library Puzzle {
   /**
    * @notice Update an element of picSeq at `_index`.
    */
-  function updatePicSeq(address owner, uint256 _index, uint256 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function updatePicSeq(address tokenAddr, uint256 tokenId, address owner, uint256 _index, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -304,9 +426,11 @@ library Puzzle {
   /**
    * @notice Update an element of picSeq at `_index`.
    */
-  function _updatePicSeq(address owner, uint256 _index, uint256 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _updatePicSeq(address tokenAddr, uint256 tokenId, address owner, uint256 _index, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -317,9 +441,11 @@ library Puzzle {
   /**
    * @notice Get the full data.
    */
-  function get(address owner) internal view returns (PuzzleData memory _table) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function get(address tokenAddr, uint256 tokenId, address owner) internal view returns (PuzzleData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreSwitch.getRecord(
       _tableId,
@@ -332,9 +458,11 @@ library Puzzle {
   /**
    * @notice Get the full data.
    */
-  function _get(address owner) internal view returns (PuzzleData memory _table) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _get(address tokenAddr, uint256 tokenId, address owner) internal view returns (PuzzleData memory _table) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     (bytes memory _staticData, EncodedLengths _encodedLengths, bytes memory _dynamicData) = StoreCore.getRecord(
       _tableId,
@@ -347,14 +475,24 @@ library Puzzle {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(address owner, uint256 startTime, bool gameFinished, uint256[] memory picSeq) internal {
-    bytes memory _staticData = encodeStatic(startTime, gameFinished);
+  function set(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner,
+    uint256 startTime,
+    uint256 round,
+    bool gameFinished,
+    uint256[] memory picSeq
+  ) internal {
+    bytes memory _staticData = encodeStatic(startTime, round, gameFinished);
 
     EncodedLengths _encodedLengths = encodeLengths(picSeq);
     bytes memory _dynamicData = encodeDynamic(picSeq);
 
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -362,14 +500,24 @@ library Puzzle {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(address owner, uint256 startTime, bool gameFinished, uint256[] memory picSeq) internal {
-    bytes memory _staticData = encodeStatic(startTime, gameFinished);
+  function _set(
+    address tokenAddr,
+    uint256 tokenId,
+    address owner,
+    uint256 startTime,
+    uint256 round,
+    bool gameFinished,
+    uint256[] memory picSeq
+  ) internal {
+    bytes memory _staticData = encodeStatic(startTime, round, gameFinished);
 
     EncodedLengths _encodedLengths = encodeLengths(picSeq);
     bytes memory _dynamicData = encodeDynamic(picSeq);
 
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -377,14 +525,16 @@ library Puzzle {
   /**
    * @notice Set the full data using the data struct.
    */
-  function set(address owner, PuzzleData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.startTime, _table.gameFinished);
+  function set(address tokenAddr, uint256 tokenId, address owner, PuzzleData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.startTime, _table.round, _table.gameFinished);
 
     EncodedLengths _encodedLengths = encodeLengths(_table.picSeq);
     bytes memory _dynamicData = encodeDynamic(_table.picSeq);
 
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData);
   }
@@ -392,14 +542,16 @@ library Puzzle {
   /**
    * @notice Set the full data using the data struct.
    */
-  function _set(address owner, PuzzleData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.startTime, _table.gameFinished);
+  function _set(address tokenAddr, uint256 tokenId, address owner, PuzzleData memory _table) internal {
+    bytes memory _staticData = encodeStatic(_table.startTime, _table.round, _table.gameFinished);
 
     EncodedLengths _encodedLengths = encodeLengths(_table.picSeq);
     bytes memory _dynamicData = encodeDynamic(_table.picSeq);
 
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.setRecord(_tableId, _keyTuple, _staticData, _encodedLengths, _dynamicData, _fieldLayout);
   }
@@ -407,10 +559,14 @@ library Puzzle {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (uint256 startTime, bool gameFinished) {
+  function decodeStatic(
+    bytes memory _blob
+  ) internal pure returns (uint256 startTime, uint256 round, bool gameFinished) {
     startTime = (uint256(Bytes.getBytes32(_blob, 0)));
 
-    gameFinished = (_toBool(uint8(Bytes.getBytes1(_blob, 32))));
+    round = (uint256(Bytes.getBytes32(_blob, 32)));
+
+    gameFinished = (_toBool(uint8(Bytes.getBytes1(_blob, 64))));
   }
 
   /**
@@ -439,7 +595,7 @@ library Puzzle {
     EncodedLengths _encodedLengths,
     bytes memory _dynamicData
   ) internal pure returns (PuzzleData memory _table) {
-    (_table.startTime, _table.gameFinished) = decodeStatic(_staticData);
+    (_table.startTime, _table.round, _table.gameFinished) = decodeStatic(_staticData);
 
     (_table.picSeq) = decodeDynamic(_encodedLengths, _dynamicData);
   }
@@ -447,9 +603,11 @@ library Puzzle {
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord(address owner) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function deleteRecord(address tokenAddr, uint256 tokenId, address owner) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -457,9 +615,11 @@ library Puzzle {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord(address owner) internal {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function _deleteRecord(address tokenAddr, uint256 tokenId, address owner) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -468,8 +628,8 @@ library Puzzle {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint256 startTime, bool gameFinished) internal pure returns (bytes memory) {
-    return abi.encodePacked(startTime, gameFinished);
+  function encodeStatic(uint256 startTime, uint256 round, bool gameFinished) internal pure returns (bytes memory) {
+    return abi.encodePacked(startTime, round, gameFinished);
   }
 
   /**
@@ -499,10 +659,11 @@ library Puzzle {
    */
   function encode(
     uint256 startTime,
+    uint256 round,
     bool gameFinished,
     uint256[] memory picSeq
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(startTime, gameFinished);
+    bytes memory _staticData = encodeStatic(startTime, round, gameFinished);
 
     EncodedLengths _encodedLengths = encodeLengths(picSeq);
     bytes memory _dynamicData = encodeDynamic(picSeq);
@@ -513,9 +674,11 @@ library Puzzle {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple(address owner) internal pure returns (bytes32[] memory) {
-    bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32(uint256(uint160(owner)));
+  function encodeKeyTuple(address tokenAddr, uint256 tokenId, address owner) internal pure returns (bytes32[] memory) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
+    _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
+    _keyTuple[1] = bytes32(uint256(tokenId));
+    _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     return _keyTuple;
   }
