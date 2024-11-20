@@ -18,4 +18,6 @@ interface IBonusSystem {
   function getBonusBatchRank(BonusBatchRank memory bonusBatchRank) external view returns (BonusBatchResRank[] memory);
 
   function claimBonusSingle(BonusSingle memory bonusSingle) external;
+
+  function claclaimBonusBatch(BonusSingle[] memory bonusSingle) external;
 }

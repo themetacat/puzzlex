@@ -10,6 +10,7 @@ import { Check } from "../libraries/Check.sol";
 import { NFTInfo } from "../libraries/Struct.sol";
 import { AccessRequire } from "../libraries/AccessRequire.sol";
 import { ERC721System } from "@latticexyz/world-modules/src/modules/erc721-puppet/ERC721System.sol";
+import { GameStatus } from "../codegen/common.sol";
 
 contract PuzzleXSystem is System {
   function createGame(NFTInfo memory nftInfo) public {
@@ -29,7 +30,7 @@ contract PuzzleXSystem is System {
     PlayerGameRecordData memory playerGameRecordData = PlayerGameRecord.get(tokenAddr, tokenId, owner, round);
     GameRecordData memory gameRecordData = GameRecord.get(tokenAddr, tokenId, round);
 
-    Puzzle.set(tokenAddr, tokenId, owner, block.timestamp, round, false, shuffleArray);
+    Puzzle.set(tokenAddr, tokenId, owner, block.timestamp, round, GameStatus.INGAME, shuffleArray);
     PlayableGames.setTimes(tokenAddr, tokenId, owner, playableGamesData.times - 1);
     _updateGameActivityInfo(nftInfo, round, playerGameRecordData.playTimes + 1);
     GameRecord.set(
@@ -38,7 +39,7 @@ contract PuzzleXSystem is System {
       round,
       gameRecordData.playTimes + 1,
       gameRecordData.successTimes,
-      gameRecordData.successPlayer, //!!! 0
+      gameRecordData.successPlayer,
       gameRecordData.pool + playableGamesData.ticket
     );
     PlayerGameRecord.set(
@@ -64,12 +65,12 @@ contract PuzzleXSystem is System {
     uint256[] memory picSeq = puzzleData.picSeq;
     require(picSeq.length > 0, "no game");
 
-    require(!puzzleData.gameFinished, "game finished");
+    require(puzzleData.gameStatus == GameStatus.INGAME, "not in game");
 
     AccessRequire.gameInRound(nftInfo, owner);
     bool roundInProgress = AccessRequire.roundInProgress(nftInfo);
     if (!roundInProgress) {
-      Puzzle.setGameFinished(tokenAddr, tokenId, owner, true);
+      Puzzle.setGameStatus(tokenAddr, tokenId, owner, GameStatus.FINISHED);
     } else {
       uint256 xLength = indexX.length;
       require(xLength == indexY.length, "Different lengths");
@@ -83,7 +84,7 @@ contract PuzzleXSystem is System {
       bool gameSuccess = Check.checkGameSuccess(picSeq);
       _updatePlayerRecord(nftInfo, gameSuccess);
       if (gameSuccess) {
-        Puzzle.setGameFinished(tokenAddr, tokenId, owner, gameSuccess);
+        Puzzle.setGameStatus(tokenAddr, tokenId, owner, GameStatus.SUCCESS);
       }
     }
   }

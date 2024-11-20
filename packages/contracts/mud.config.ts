@@ -12,8 +12,12 @@ const erc721ModuleArgs = encodeAbiParameters(
   [stringToHex("PuzzleX", { size: 14 }), ["PuzzleX", "PX", "http://www.example.com/base/uri/goes/here"]],
 );
 
+const enums = {
+  GameStatus: ["INGAME", "SUCCESS", "FINISHED"]
+}
 
 export default defineWorld({
+  enums,
   tables: {
     Puzzle: {
       schema: {
@@ -22,7 +26,7 @@ export default defineWorld({
         owner: "address",
         startTime: "uint256",
         round: "uint256",
-        gameFinished: "bool",
+        gameStatus: "GameStatus",
         picSeq: "uint256[]",
       },
       key: ["tokenAddr", "tokenId", "owner"],

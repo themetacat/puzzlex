@@ -16,10 +16,13 @@ import { Schema } from "@latticexyz/store/src/Schema.sol";
 import { EncodedLengths, EncodedLengthsLib } from "@latticexyz/store/src/EncodedLengths.sol";
 import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 
+// Import user types
+import { GameStatus } from "../common.sol";
+
 struct PuzzleData {
   uint256 startTime;
   uint256 round;
-  bool gameFinished;
+  GameStatus gameStatus;
   uint256[] picSeq;
 }
 
@@ -32,8 +35,8 @@ library Puzzle {
 
   // Hex-encoded key schema of (address, uint256, address)
   Schema constant _keySchema = Schema.wrap(0x00480300611f6100000000000000000000000000000000000000000000000000);
-  // Hex-encoded value schema of (uint256, uint256, bool, uint256[])
-  Schema constant _valueSchema = Schema.wrap(0x004103011f1f6081000000000000000000000000000000000000000000000000);
+  // Hex-encoded value schema of (uint256, uint256, uint8, uint256[])
+  Schema constant _valueSchema = Schema.wrap(0x004103011f1f0081000000000000000000000000000000000000000000000000);
 
   /**
    * @notice Get the table's key field names.
@@ -54,7 +57,7 @@ library Puzzle {
     fieldNames = new string[](4);
     fieldNames[0] = "startTime";
     fieldNames[1] = "round";
-    fieldNames[2] = "gameFinished";
+    fieldNames[2] = "gameStatus";
     fieldNames[3] = "picSeq";
   }
 
@@ -173,61 +176,61 @@ library Puzzle {
   }
 
   /**
-   * @notice Get gameFinished.
+   * @notice Get gameStatus.
    */
-  function getGameFinished(
+  function getGameStatus(
     address tokenAddr,
     uint256 tokenId,
     address owner
-  ) internal view returns (bool gameFinished) {
+  ) internal view returns (GameStatus gameStatus) {
     bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
     _keyTuple[1] = bytes32(uint256(tokenId));
     _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
-    return (_toBool(uint8(bytes1(_blob))));
+    return GameStatus(uint8(bytes1(_blob)));
   }
 
   /**
-   * @notice Get gameFinished.
+   * @notice Get gameStatus.
    */
-  function _getGameFinished(
+  function _getGameStatus(
     address tokenAddr,
     uint256 tokenId,
     address owner
-  ) internal view returns (bool gameFinished) {
+  ) internal view returns (GameStatus gameStatus) {
     bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
     _keyTuple[1] = bytes32(uint256(tokenId));
     _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
-    return (_toBool(uint8(bytes1(_blob))));
+    return GameStatus(uint8(bytes1(_blob)));
   }
 
   /**
-   * @notice Set gameFinished.
+   * @notice Set gameStatus.
    */
-  function setGameFinished(address tokenAddr, uint256 tokenId, address owner, bool gameFinished) internal {
+  function setGameStatus(address tokenAddr, uint256 tokenId, address owner, GameStatus gameStatus) internal {
     bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
     _keyTuple[1] = bytes32(uint256(tokenId));
     _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((gameFinished)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked(uint8(gameStatus)), _fieldLayout);
   }
 
   /**
-   * @notice Set gameFinished.
+   * @notice Set gameStatus.
    */
-  function _setGameFinished(address tokenAddr, uint256 tokenId, address owner, bool gameFinished) internal {
+  function _setGameStatus(address tokenAddr, uint256 tokenId, address owner, GameStatus gameStatus) internal {
     bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = bytes32(uint256(uint160(tokenAddr)));
     _keyTuple[1] = bytes32(uint256(tokenId));
     _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((gameFinished)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked(uint8(gameStatus)), _fieldLayout);
   }
 
   /**
@@ -481,10 +484,10 @@ library Puzzle {
     address owner,
     uint256 startTime,
     uint256 round,
-    bool gameFinished,
+    GameStatus gameStatus,
     uint256[] memory picSeq
   ) internal {
-    bytes memory _staticData = encodeStatic(startTime, round, gameFinished);
+    bytes memory _staticData = encodeStatic(startTime, round, gameStatus);
 
     EncodedLengths _encodedLengths = encodeLengths(picSeq);
     bytes memory _dynamicData = encodeDynamic(picSeq);
@@ -506,10 +509,10 @@ library Puzzle {
     address owner,
     uint256 startTime,
     uint256 round,
-    bool gameFinished,
+    GameStatus gameStatus,
     uint256[] memory picSeq
   ) internal {
-    bytes memory _staticData = encodeStatic(startTime, round, gameFinished);
+    bytes memory _staticData = encodeStatic(startTime, round, gameStatus);
 
     EncodedLengths _encodedLengths = encodeLengths(picSeq);
     bytes memory _dynamicData = encodeDynamic(picSeq);
@@ -526,7 +529,7 @@ library Puzzle {
    * @notice Set the full data using the data struct.
    */
   function set(address tokenAddr, uint256 tokenId, address owner, PuzzleData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.startTime, _table.round, _table.gameFinished);
+    bytes memory _staticData = encodeStatic(_table.startTime, _table.round, _table.gameStatus);
 
     EncodedLengths _encodedLengths = encodeLengths(_table.picSeq);
     bytes memory _dynamicData = encodeDynamic(_table.picSeq);
@@ -543,7 +546,7 @@ library Puzzle {
    * @notice Set the full data using the data struct.
    */
   function _set(address tokenAddr, uint256 tokenId, address owner, PuzzleData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.startTime, _table.round, _table.gameFinished);
+    bytes memory _staticData = encodeStatic(_table.startTime, _table.round, _table.gameStatus);
 
     EncodedLengths _encodedLengths = encodeLengths(_table.picSeq);
     bytes memory _dynamicData = encodeDynamic(_table.picSeq);
@@ -561,12 +564,12 @@ library Puzzle {
    */
   function decodeStatic(
     bytes memory _blob
-  ) internal pure returns (uint256 startTime, uint256 round, bool gameFinished) {
+  ) internal pure returns (uint256 startTime, uint256 round, GameStatus gameStatus) {
     startTime = (uint256(Bytes.getBytes32(_blob, 0)));
 
     round = (uint256(Bytes.getBytes32(_blob, 32)));
 
-    gameFinished = (_toBool(uint8(Bytes.getBytes1(_blob, 64))));
+    gameStatus = GameStatus(uint8(Bytes.getBytes1(_blob, 64)));
   }
 
   /**
@@ -595,7 +598,7 @@ library Puzzle {
     EncodedLengths _encodedLengths,
     bytes memory _dynamicData
   ) internal pure returns (PuzzleData memory _table) {
-    (_table.startTime, _table.round, _table.gameFinished) = decodeStatic(_staticData);
+    (_table.startTime, _table.round, _table.gameStatus) = decodeStatic(_staticData);
 
     (_table.picSeq) = decodeDynamic(_encodedLengths, _dynamicData);
   }
@@ -628,8 +631,8 @@ library Puzzle {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint256 startTime, uint256 round, bool gameFinished) internal pure returns (bytes memory) {
-    return abi.encodePacked(startTime, round, gameFinished);
+  function encodeStatic(uint256 startTime, uint256 round, GameStatus gameStatus) internal pure returns (bytes memory) {
+    return abi.encodePacked(startTime, round, gameStatus);
   }
 
   /**
@@ -660,10 +663,10 @@ library Puzzle {
   function encode(
     uint256 startTime,
     uint256 round,
-    bool gameFinished,
+    GameStatus gameStatus,
     uint256[] memory picSeq
   ) internal pure returns (bytes memory, EncodedLengths, bytes memory) {
-    bytes memory _staticData = encodeStatic(startTime, round, gameFinished);
+    bytes memory _staticData = encodeStatic(startTime, round, gameStatus);
 
     EncodedLengths _encodedLengths = encodeLengths(picSeq);
     bytes memory _dynamicData = encodeDynamic(picSeq);
@@ -681,17 +684,5 @@ library Puzzle {
     _keyTuple[2] = bytes32(uint256(uint160(owner)));
 
     return _keyTuple;
-  }
-}
-
-/**
- * @notice Cast a value to a bool.
- * @dev Boolean values are encoded as uint8 (1 = true, 0 = false), but Solidity doesn't allow casting between uint8 and bool.
- * @param value The uint8 value to convert.
- * @return result The boolean value.
- */
-function _toBool(uint8 value) pure returns (bool result) {
-  assembly {
-    result := value
   }
 }

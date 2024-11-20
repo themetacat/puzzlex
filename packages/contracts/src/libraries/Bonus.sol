@@ -8,7 +8,7 @@ import { Check } from "./Check.sol";
 import { FiRST_TIER_COUNT } from "./Constant.sol";
 import { AccessRequire } from "./AccessRequire.sol";
 
-library Bouns {
+library Bonus {
   function getBonus(NFTInfo memory nftInfo, uint256 round, address player) internal view returns (uint256) {
     address tokenAddr = nftInfo.tokenAddr;
     uint256 tokenId = nftInfo.tokenId;
@@ -18,9 +18,17 @@ library Bouns {
 
     RankRecordData memory rankRecordData = RankRecord.get(tokenAddr, tokenId, round);
 
+    uint256 bonus;
+    if (AccessRequire.isNFTOwner(nftInfo, player)) {
+      // creator
+      bonus += getOwnerBonus(gameRecordData.pool);
+    }
     int256 userIndex = Check.findUserIndex(rankRecordData.players, player);
+
+    // activity user
+    bonus += getBonusActivity(nftInfo, round, player, gameRecordData.pool);
     if (userIndex < 0) {
-      return 0;
+      return bonus;
     }
 
     uint256 index = uint256(userIndex);
@@ -28,14 +36,9 @@ library Bouns {
     if (tier == 0) {
       return 0;
     }
-    uint256 bouns = getTierToBouns(gameRecordData.pool, successPlayer, tier, index);
-    if (AccessRequire.isNFTOwner(nftInfo, player)) {
-      // creator
-      bouns += getOwnerBonus(gameRecordData.pool);
-    }
-    // activity user
-    bouns += getBonusActivity(nftInfo, round, player, gameRecordData.pool);
-    return bouns;
+    bonus = getTierToBonus(gameRecordData.pool, successPlayer, tier, index);
+  
+    return bonus;
   }
 
   function getBonusActivity(
@@ -79,7 +82,7 @@ library Bouns {
     }
   }
 
-  function getTierToBouns(
+  function getTierToBonus(
     uint256 pool,
     uint256 playerCount,
     uint256 tier,

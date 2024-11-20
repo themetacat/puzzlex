@@ -6,7 +6,7 @@ import { GameRecord, PlayerClaim, PlayerWithdrawn, GameRound } from "../codegen/
 import { IERC721Mintable } from "@latticexyz/world-modules/src/modules/erc721-puppet/IERC721Mintable.sol";
 import { NFTInfo, BonusSingle, BonusBatchRank, BonusBatchResProfile, BonusBatchResRank } from "../libraries/Struct.sol";
 import { AccessRequire } from "../libraries/AccessRequire.sol";
-import { Bouns } from "../libraries/Bouns.sol";
+import { Bonus } from "../libraries/Bonus.sol";
 import { WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
 import { IWorld } from "../codegen/world/IWorld.sol";
 import { Balances } from "@latticexyz/world/src/codegen/index.sol";
@@ -18,7 +18,7 @@ import { Check } from "../libraries/Check.sol";
 
 contract BonusSystem is System, IWorldErrors {
   /*
-   * get single game (all round or single round) bouns
+   * get single game (all round or single round) Bonus
    * claimCheck: false - earned bonus;
    *             true - (unclaimed and claimable) bonus
    *                    (in game round unclaimable)
@@ -37,12 +37,12 @@ contract BonusSystem is System, IWorldErrors {
         bool claimable = AccessRequire.claimableThisRound(nftInfo, round);
         bool claimed = PlayerClaim.get(tokenAddr, tokenId, bonusSingle.player, round);
         if (!claimed && claimable) {
-          res += Bouns.getBonus(nftInfo, round, player);
+          res += Bonus.getBonus(nftInfo, round, player);
         }
       }
     } else {
       for (uint256 i = 0; i < bonusSingle.round.length; i++) {
-        res += Bouns.getBonus(nftInfo, bonusSingle.round[i], player);
+        res += Bonus.getBonus(nftInfo, bonusSingle.round[i], player);
       }
     }
     return res;
@@ -95,6 +95,12 @@ contract BonusSystem is System, IWorldErrors {
     PlayerWithdrawn.set(tokenAddr, tokenId, player, unclaimedBonus + PlayerWithdrawn.get(tokenAddr, tokenId, player));
     //   IWorld(_world()).transferBalanceToAddress(WorldResourceIdLib.encodeNamespace(""), player, unclaimedBonus);
     _transferBalance(unclaimedBonus, player);
+  }
+
+  function claclaimBonusBatch(BonusSingle[] memory bonusSingle) public {
+    for (uint256 index = 0; index < bonusSingle.length; index++) {
+      claimBonusSingle(bonusSingle[index]);
+    }
   }
 
   function _transferBalance(uint256 bonus, address player) private {

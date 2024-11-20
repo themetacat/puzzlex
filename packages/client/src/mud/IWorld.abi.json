@@ -121,6 +121,48 @@
   },
   {
     "type": "function",
+    "name": "claclaimBonusBatch",
+    "inputs": [
+      {
+        "name": "bonusSingle",
+        "type": "tuple[]",
+        "internalType": "struct BonusSingle[]",
+        "components": [
+          {
+            "name": "nftInfo",
+            "type": "tuple",
+            "internalType": "struct NFTInfo",
+            "components": [
+              {
+                "name": "tokenAddr",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "tokenId",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "name": "round",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "player",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "claimBonusSingle",
     "inputs": [
       {
