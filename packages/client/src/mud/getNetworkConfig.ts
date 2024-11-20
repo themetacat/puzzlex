@@ -41,6 +41,7 @@ export async function getNetworkConfig() {
    */
   const chainIndex = supportedChains.findIndex((c) => c.id === chainId);
   const chain = supportedChains[chainIndex];
+  
   if (!chain) {
     throw new Error(`Chain ${chainId} not found`);
   }
