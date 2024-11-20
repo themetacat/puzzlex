@@ -2,9 +2,8 @@ import { useMemo, useRef, memo, useState, useEffect } from 'react';
 import $style from './index.module.scss';
 
 const GameContent = (props: any) => {
-    const { rows, item, currentIndex, isActive, itemSize, bg, itemClick } = props;
+    const { rows, item, currentIndex, isActive, itemSize, bg, itemClick, connectBlock } = props;
     const gameRef = useRef() as any;
-    const [isShowdSuccess, setShowdSuccess] = useState(false);
     const onGameItemClick = () => {
         if (item.originalIndex === currentIndex) {
             gameRef.current.classList.add($style['game-click']);
@@ -34,16 +33,106 @@ const GameContent = (props: any) => {
         }
     }, [currentIndex, item, itemSize, bg]);
 
-    const successDom = useMemo(() => {
-        return (
-            item.originalIndex === currentIndex && (
-                <>
-                    <div className={$style['success-mask']}></div>
-                    <div className={$style['success-icon']}></div>
-                </>
-            )
-        )
-    }, [item, currentIndex]);
+    const borderStyle = useMemo(() => {
+        const lines = Math.floor(currentIndex / rows);
+        const cols = currentIndex % rows;
+
+        if (connectBlock?.lineBlock.length) {
+            // 判断当前元素是否在行块中
+            for (let i = 0; i < connectBlock?.lineBlock.length; i++) {
+                for (let j = 0; j < connectBlock.lineBlock[i].length; j++) {
+                    if (connectBlock.lineBlock[i][j].row === lines && connectBlock.lineBlock[i][j].col === cols) {
+                        if (j === 0) {
+                            return {
+                                borderTop: '2px dashed #F6F6F6',
+                                borderBottom: '2px dashed #F6F6F6',
+                                borderRight: 'none',
+                                borderLeft: '2px dashed #F6F6F6'
+                            }
+                        }
+                        else if (j === connectBlock.lineBlock[i].length - 1) {
+                            return {
+                                borderTop: '2px dashed #F6F6F6',
+                                borderBottom: '2px dashed #F6F6F6',
+                                borderRight: '2px dashed #F6F6F6',
+                                borderLeft: 'none'
+                            }
+                        }
+                        else {
+                            return {
+                                borderTop: '2px dashed #F6F6F6',
+                                borderBottom: '2px dashed #F6F6F6',
+                                borderRight: 'none',
+                                borderLeft: 'none'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (connectBlock?.colBlock?.length) {
+            // 判断当前元素是否在列块中
+            for (let i = 0; i < connectBlock?.colBlock.length; i++) {
+                for (let j = 0; j < connectBlock.colBlock[i].length; j++) {
+                    if (connectBlock.colBlock[i][j].row === lines && connectBlock.colBlock[i][j].col === cols) {
+                        if (j === 0) {
+                            return {
+                                borderTop: '2px dashed #F6F6F6',
+                                borderBottom: 'none',
+                                borderRight: '2px dashed #F6F6F6',
+                                borderLeft: '2px dashed #F6F6F6'
+                            }
+                        }
+                        else if (j === connectBlock.colBlock[i].length - 1) {
+                            return {
+                                borderTop: 'none',
+                                borderBottom: '2px dashed #F6F6F6',
+                                borderRight: '2px dashed #F6F6F6',
+                                borderLeft: '2px dashed #F6F6F6'
+                            }
+                        }
+                        else {
+                            return {
+                                borderTop: 'none',
+                                borderBottom: 'none',
+                                borderRight: '2px dashed #F6F6F6',
+                                borderLeft: '2px dashed #F6F6F6'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return {
+            borderBottom: lines !== (rows - 1) ? '1px solid #784017' : 'none',
+            borderRight: cols !== (rows - 1) ? '1px solid #784017' : 'none',
+        }
+    }, [currentIndex, rows, connectBlock]);
+
+    const isDiffBlock = useMemo(() => {
+        const lines = Math.floor(currentIndex / rows);
+        const cols = currentIndex % rows;
+
+        let isLineBlock = false;
+        const lineBlock = connectBlock.lineBlock.flat();
+        isLineBlock = lineBlock.find((item: any) => item.row === lines && item.col === cols);
+
+        let isRowBlock = false;
+        const colBlock = connectBlock.colBlock.flat();
+        isRowBlock = colBlock.find((item: any) => item.row === lines && item.col === cols);
+
+        return {
+            isLineBlock,
+            isRowBlock
+        };
+
+    }, [currentIndex, connectBlock, rows]);
+
+    useEffect(() => {
+        console.log('是否被包含', isDiffBlock);
+    }, [isDiffBlock]);
 
     return (
         <div
@@ -51,14 +140,15 @@ const GameContent = (props: any) => {
             onClick={() => onGameItemClick()}
             className={`
                 ${$style['game-item']}
-                ${isActive ? $style['active'] : ''}                
+                ${isActive ? $style['active'] : ''}
+                ${item.originalIndex === currentIndex && $style['success']}
             `}
             key={item.key}
             style={{
-                ...itemStyle
+                ...itemStyle,
+                ...borderStyle
             }}
         >
-            {successDom}
         </div>
     )
 };

@@ -4,6 +4,7 @@ import GameoverModal from './components/GameoverModal';
 import SuccessModal from './components/SuccessModal';
 import GameRoundModal from './components/GameRoundModal';
 import $style from './index.module.scss';
+import GameBg from '@/assets/game/game.png';
 
 function shuffleIndexes(length: number) {
     // 创建一个包含 0 到 length-1 的有序索引数组
@@ -68,7 +69,7 @@ const Game = () => {
                 <div className={$style['game-main-content']}>
                     <div className={$style['content-bg1']}></div>
                     <div className={$style['content-bg2']}></div>
-                    <GameContent rows={rows} list={list} />
+                    <GameContent rows={rows} list={list} gameImg={GameBg} />
                 </div>
                 <div className={$style['game-main-right']}>
                     <div className={$style['right-btn']}>New Game</div>
