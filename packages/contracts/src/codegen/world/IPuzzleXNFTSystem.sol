@@ -9,14 +9,7 @@ pragma solidity >=0.8.24;
  * @dev This interface is automatically generated from the corresponding system contract. Do not edit manually.
  */
 interface IPuzzleXNFTSystem {
-  function mintNFT(
-    string memory name,
-    address to,
-    uint256 ticket,
-    uint256 numOfGames,
-    uint256 preRound,
-    uint256 pieces
-  ) external payable;
+  function mintNFT(string memory name, address to) external payable;
 
   function setOwner(address addr) external;
 }

@@ -145,11 +145,11 @@ export default defineWorld({
   //   }
   // },
   modules: [
-    // {
-    //   artifactPath: "@latticexyz/world-modules/out/PuppetModule.sol/PuppetModule.json",
-    //   root: false,
-    //   args: [],
-    // },
+    {
+      artifactPath: "@latticexyz/world-modules/out/PuppetModule.sol/PuppetModule.json",
+      root: false,
+      args: [],
+    },
     {
       artifactPath: "@latticexyz/world-modules/out/ERC721Module.sol/ERC721Module.json",
       root: false,

@@ -88,8 +88,6 @@ export async function setupNetwork() {
     publicClient,
     startBlock: BigInt(networkConfig.initialBlockNumber),
   });
-  console.log(components);
-  
 
   return {
     world,
