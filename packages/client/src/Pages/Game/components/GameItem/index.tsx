@@ -44,24 +44,24 @@ const GameContent = (props: any) => {
                     if (connectBlock.lineBlock[i][j].row === lines && connectBlock.lineBlock[i][j].col === cols) {
                         if (j === 0) {
                             return {
-                                borderTop: '2px dashed #F6F6F6',
-                                borderBottom: '2px dashed #F6F6F6',
+                                borderTop: '2px dashed #fff',
+                                borderBottom: '2px dashed #fff',
                                 borderRight: 'none',
-                                borderLeft: '2px dashed #F6F6F6'
+                                borderLeft: '2px dashed #fff'
                             }
                         }
                         else if (j === connectBlock.lineBlock[i].length - 1) {
                             return {
-                                borderTop: '2px dashed #F6F6F6',
-                                borderBottom: '2px dashed #F6F6F6',
-                                borderRight: '2px dashed #F6F6F6',
+                                borderTop: '2px dashed #fff',
+                                borderBottom: '2px dashed #fff',
+                                borderRight: '2px dashed #fff',
                                 borderLeft: 'none'
                             }
                         }
                         else {
                             return {
-                                borderTop: '2px dashed #F6F6F6',
-                                borderBottom: '2px dashed #F6F6F6',
+                                borderTop: '2px dashed #fff',
+                                borderBottom: '2px dashed #fff',
                                 borderRight: 'none',
                                 borderLeft: 'none'
                             }
@@ -105,11 +105,17 @@ const GameContent = (props: any) => {
             }
         }
 
+        if (isActive) {
+            return {
+                border: '2px dashed #F6F6F6'
+            }
+        }
+
         return {
             borderBottom: lines !== (rows - 1) ? '1px solid #784017' : 'none',
             borderRight: cols !== (rows - 1) ? '1px solid #784017' : 'none',
         }
-    }, [currentIndex, rows, connectBlock]);
+    }, [currentIndex, rows, connectBlock, isActive]);
 
     const isDiffBlock = useMemo(() => {
         const lines = Math.floor(currentIndex / rows);
