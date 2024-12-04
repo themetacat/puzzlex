@@ -2,7 +2,7 @@ import { Form, Input, InputNumber, Select, Space } from 'antd';
 import SelectImageModal from './components/SelectImageModal';
 import EditImageModal from './components/EditImageModal';
 import $style from './index.module.scss';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const CreateGame = () => {
     const [form] = Form.useForm();
@@ -31,6 +31,17 @@ const CreateGame = () => {
     const onUploadClick = () => {
         setShowSelectModal(true);
     };
+
+    const handleCreate = () => {
+        form.validateFields()
+            .then(() => {
+                console.log('xxxxx校验成功')
+            })
+            .catch((e) => {
+                console.log(e)
+            });
+    };
+
 
     return (
         <div className={$style['create']}>
@@ -124,7 +135,7 @@ const CreateGame = () => {
                     <div className={$style['left-price']}>
                         Creation price： 0.03 ETH
                     </div>
-                    <div className={$style['left-btn']}>Create</div>
+                    <div className={$style['left-btn']} onClick={handleCreate}>Create</div>
                 </div>
                 <div className={$style['create-content-right']}>
                     <div className={$style['right-box']}>
