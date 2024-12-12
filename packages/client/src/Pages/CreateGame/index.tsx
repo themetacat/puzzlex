@@ -1,13 +1,38 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Form, Input, InputNumber, Select, Space } from 'antd';
+// import { useAccount } from 'wagmi';
+import { ethers } from 'ethers';
+// import { useMUD } from "@/MUDContext";
 import SelectImageModal from './components/SelectImageModal';
 import EditImageModal from './components/EditImageModal';
+// import { useComponentValue } from '@latticexyz/react';
+// import { singletonEntity } from "@latticexyz/store-sync/recs";
 import $style from './index.module.scss';
-import { useEffect, useMemo, useState } from 'react';
+import { getComponentValue } from '@latticexyz/recs';
+// import {
+//     encodeEntity,
+//     decodeEntity,
+//   } from "@latticexyz/store-sync/recs";
+
+const preImg = 'https://gateway.pinata.cloud/ipfs/';
+// const addressToEntityID = (address: Hex) =>
+//     encodeEntity({ address: "address" }, { address });
 
 const CreateGame = () => {
     const [form] = Form.useForm();
     const [isShowSelectModal, setShowSelectModal] = useState(false);
     const [isShowEditModal, setShowEditModal] = useState(false);
+    const [curNft, setCurNft] = useState('');
+    const [imgUrl, setImgUrl] = useState('');
+    // const { address } = useAccount();
+
+    // form.setFieldValue('image', '123');
+    // const {
+    //     network,
+    //     components: {TotalSupply, NamespaceOwner},
+    // } = useMUD();
+
+    // console.log('----NamespaceOwner', a);
 
     const layout = {
         labelCol: { span: 8 },
@@ -15,15 +40,18 @@ const CreateGame = () => {
     };
 
     const onSelectModalOk = (data: string) => {
+        setCurNft(data);
         setShowSelectModal(false);
         setShowEditModal(true);
     };
 
     const onEditModalOk = (imgData: string) => {
+        setImgUrl(imgData);
         setShowEditModal(false);
     };
 
     const onEditBack = () => {
+        console.log('0000')
         setShowEditModal(false);
         setShowSelectModal(true);
     };
@@ -34,14 +62,25 @@ const CreateGame = () => {
 
     const handleCreate = () => {
         form.validateFields()
-            .then(() => {
-                console.log('xxxxx校验成功')
+            .then(async (value) => {
+                // // 1. 先mint nft
+                // const res = await network.worldContract.write.mintNFT([value.name, address], {
+                //     value: ethers.parseEther('0.03')
+                // });
+
+                // const a =  getComponentValue(TotalSupply, addressToEntityID(address));
+                // console.log(a);
+                // console.log("Transaction Hash:", res);
+
+                // // 等待交易确认并获取回执
+                // const receipt = await network.waitForTransaction(res);
+
+
             })
             .catch((e) => {
                 console.log(e)
             });
     };
-
 
     return (
         <div className={$style['create']}>
@@ -73,9 +112,21 @@ const CreateGame = () => {
                                     label="Game foreground image."
                                     rules={[{ required: true, message: 'Please input first name' }]}
                                 >
-                                    <div className={$style['form-upload']} onClick={onUploadClick}>
-                                        <div className={$style['form-upload-icon']}></div>
-                                    </div>
+                                    {
+                                        imgUrl.length ?
+                                            <div
+                                                className={$style['form-img']}
+                                                style={{
+                                                    backgroundImage: `url(${preImg + imgUrl})`,
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center'
+                                                }}
+                                            ></div>
+                                            :
+                                            <div className={$style['form-upload']} onClick={onUploadClick}>
+                                                <div className={$style['form-upload-icon']}></div>
+                                            </div>
+                                    }
                                 </Form.Item>
                             </Form>
                             <div className={$style['main-sub']}>Once created, this information cannot be modified.</div>
@@ -152,7 +203,7 @@ const CreateGame = () => {
             </div>
 
             <SelectImageModal open={isShowSelectModal} cancel={() => setShowSelectModal(false)} onOk={onSelectModalOk} />
-            <EditImageModal open={isShowEditModal} onBack={onEditBack} onOk={onEditModalOk}/>
+            <EditImageModal nftData={curNft} open={isShowEditModal} onBack={onEditBack} onOk={onEditModalOk} />
         </div>
     )
 };

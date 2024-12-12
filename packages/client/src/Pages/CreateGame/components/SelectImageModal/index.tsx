@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Select, List } from 'antd';
 import { useMUD } from '@/MUDContext';
-import { chains } from '@/chains';
+import { useAccount } from 'wagmi';
 
 import $style from './index.module.scss';
 
@@ -14,47 +14,30 @@ const SelectImageModal = (props: any) => {
     const {
         network
     } = useMUD();
+    const { address } = useAccount();
 
     const { open, cancel, onOk } = props;
-    const [currentChainId, setChainId] = useState(0);
-
-    const imgList = [
-        {},
-        {},
-        {},
-        {},
-        {}
-    ];
+    const [currentChainId, setChainId] = useState(1);
+    const [nftList, setNftList] = useState([]);
+    const [curNft, setCurNft] = useState<any>({});
 
     const onNext = () => {
-        const selectImg = 'xxxxx';
-        onOk(selectImg);
+        onOk(curNft);
     };
 
-
-    const chainList = useMemo(() => {
-        return chains.map((item) => {
-            return {
-                id: item.id,
-                label: item.name
-            }
-        });
-    }, [chains]);
-
-    const getChainId = async () => {
-        const chainId = await network.walletClient.getChainId();
-        setChainId(chainId)
-        console.log(chainId, 'xxxxx');
-    };
+    const chainList = [
+        {
+            id: 1,
+            label: 'ethereum'
+        },
+        {
+            id: 137,
+            label: 'polygon'
+        }
+    ];
 
     const onChangeChain = async (id: number) => {
-        try {
-            await network.walletClient.switchChain({
-                id
-            });
-        } catch (error) {
-            console.error("Error switching chain:", error);
-        }
+        setChainId(id);
     };
 
     const fetchNFTs = async (address: string) => {
@@ -65,7 +48,7 @@ const SelectImageModal = (props: any) => {
             const chainMap: Record<number, string> = {
                 1: "ethereum",     // Ethereum Mainnet
                 137: "polygon",    // Polygon
-                31337: "hardhat",  // Hardhat Local (OpenSea 不支持)
+                // 31337: "hardhat",  // Hardhat Local (OpenSea 不支持)
             };
             const chainName = chainMap[chainId];
 
@@ -73,14 +56,18 @@ const SelectImageModal = (props: any) => {
                 throw new Error(`Unsupported chain ID: ${chainId}`);
             }
 
+            const testAddr = '0xD67c34169b372d5B3932c548a940D4Ea74Fe7aF5'
+
             // 3. 构造 API URL
-            const apiUrl = `https://api.opensea.io/api/v2/chain/${chainName}/account/${address}/nfts`;
+            const apiUrl = `https://api.opensea.io/api/v2/chain/${chainName}/account/${testAddr}/nfts`;
+            // const apiUrl = `https://api.opensea.io/api/v2/chain/${chainName}/account/${address}/nfts`;
 
             // 4. 调用 OpenSea API
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    'X-API-KEY': import.meta.env.VITE_XAPIKEY
                 },
             });
 
@@ -97,17 +84,24 @@ const SelectImageModal = (props: any) => {
         }
     };
 
-    const getCurNFT = async () => {
-          // 获取用户地址
-          const address = await network.walletClient.getAddresses();
-          console.log('add--->>>', address);
-          // 调用封装的 fetchNFTs 方法
-          const userNFTs = await fetchNFTs(address[0]);
+    const getNfts = async () => {
+        try {
+           const res = await fetchNFTs(address as string);
+           if (res.length) {
+                setNftList(res);
+           }
+        }
+        catch {}
+    };
+
+    const onSelectNft = (item: any) => {
+        setCurNft(item);
     };
 
     useEffect(() => {
-        getChainId();
-        currentChainId !== 0 && getCurNFT();
+        if (address && currentChainId !== 0) {
+            getNfts();
+        }
     }, [network, currentChainId]);
 
     return (
@@ -128,7 +122,7 @@ const SelectImageModal = (props: any) => {
                 {
                     chainList?.map(item => {
                         return (
-                            <Select.Option key={item.id} className={$style['modal-select-opt']}>
+                            <Select.Option value={item.id} key={item.id} className={$style['modal-select-opt']}>
                                 <div className={$style['opt-icon']}></div>
                                 <div className={$style['opt-text']}>{item.label}</div>
                             </Select.Option>
@@ -139,12 +133,16 @@ const SelectImageModal = (props: any) => {
             <div className={$style['modal-content']}>
                 <List
                     grid={listGrid}
-                    dataSource={imgList}
+                    dataSource={nftList}
                     itemLayout='horizontal'
                     renderItem={(item: any) => {
                         return (
-                            <List.Item>
-                                <div className={$style['card']}></div>
+                            <List.Item onClick={() => onSelectNft(item)}>
+                                <div
+                                    className={`${$style['card']} ${curNft.image_url === item.image_url && $style['card-select']}`}
+                                    style={{backgroundImage: `url(${item.image_url})`, backgroundSize: 'cover', backgroundPosition: 'center'}}
+                                >
+                                </div>
                             </List.Item>
                         )
                     }}

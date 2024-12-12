@@ -268,4 +268,12 @@
             background-size: cover;
         }
     }
+
+    .form-img {
+        width: 123px;
+        height: 123px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        background: #F6F6F6;
+    }
 }

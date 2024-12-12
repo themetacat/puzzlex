@@ -37,19 +37,15 @@ export const App = () => {
     network
   } = useMUD();
 
-  console.log('network----->>>>>', network)
-
   const queryClient = new QueryClient();
 
   useEffect(() => {
     async function setupContract() {
       try {
-        // 获取当前账户地址（从网络配置中获取）
-        const accounts = await network.walletClient.getAddresses();
-        const signerAddress = accounts[0];
-        console.log("Using signer address:", signerAddress);
+        // 获取合约地址
+        const contractAddress = network.worldContract.address;
         // 调用 setOwner 方法
-        await network.worldContract.write.setOwner([signerAddress]);
+        await network.worldContract.write.setOwner([contractAddress]);
       } catch (error) {
         console.error("Error during setupContract:", error);
       }
