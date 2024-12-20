@@ -28,11 +28,11 @@ const SelectImageModal = (props: any) => {
     const chainList = [
         {
             id: 1,
-            label: 'ethereum'
+            label: 'Ethereum'
         },
         {
             id: 137,
-            label: 'polygon'
+            label: 'Matic'
         }
     ];
 
@@ -47,8 +47,7 @@ const SelectImageModal = (props: any) => {
             // 2. 根据链 ID 确定链名（OpenSea 支持的链）
             const chainMap: Record<number, string> = {
                 1: "ethereum",     // Ethereum Mainnet
-                137: "polygon",    // Polygon
-                // 31337: "hardhat",  // Hardhat Local (OpenSea 不支持)
+                137: "matic",    // Polygon
             };
             const chainName = chainMap[chainId];
 
@@ -56,11 +55,8 @@ const SelectImageModal = (props: any) => {
                 throw new Error(`Unsupported chain ID: ${chainId}`);
             }
 
-            const testAddr = '0xD67c34169b372d5B3932c548a940D4Ea74Fe7aF5'
-
             // 3. 构造 API URL
-            const apiUrl = `https://api.opensea.io/api/v2/chain/${chainName}/account/${testAddr}/nfts`;
-            // const apiUrl = `https://api.opensea.io/api/v2/chain/${chainName}/account/${address}/nfts`;
+            const apiUrl = `https://api.opensea.io/api/v2/chain/${chainName}/account/${address}/nfts`;
 
             // 4. 调用 OpenSea API
             const response = await fetch(apiUrl, {
